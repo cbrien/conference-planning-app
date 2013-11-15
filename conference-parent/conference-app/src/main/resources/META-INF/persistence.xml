@@ -4,11 +4,13 @@
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
 	<persistence-unit name="conference-app">
 		<jta-data-source>java:jboss/datasources/ConferenceDS</jta-data-source>
-		<jar-file>conference.ear/conference-facility-api.jar</jar-file>
-		<jar-file>conference.ear/conference-service-api.jar</jar-file>
+		<jar-file>conference-app.ear/lib/conference-users-api.jar</jar-file>
+		<jar-file>conference-app.ear/lib/conference-facility-api.jar</jar-file>
+		<jar-file>conference-app.ear/lib/conference-events-api.jar</jar-file>
+		<jar-file>conference-app.ear/conference-events-ejb.jar</jar-file>
 		<properties>
 			<!-- Properties for Hibernate -->
-			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
+			<property name="hibernate.hbm2ddl.auto" value="update" />
 			<property name="hibernate.show_sql" value="false" />
 		</properties>
 	</persistence-unit>

@@ -24,6 +24,7 @@
 						have any modules (EJB-JARs and WARs) use them -->
 					<defaultLibBundleDir>lib</defaultLibBundleDir>
 					<modules></modules>
+					<earSourceDirectory>src/main/resources</earSourceDirectory>
 					<fileNameMapping>no-version</fileNameMapping>
 				</configuration>
 			</plugin>
@@ -44,13 +45,50 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.prodyna.pac.conference</groupId>
+			<artifactId>conference-common-api</artifactId>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>com.prodyna.pac.conference</groupId>
 			<artifactId>conference-facility-api</artifactId>
 			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>com.prodyna.pac.conference</groupId>
+			<artifactId>conference-users-api</artifactId>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>com.prodyna.pac.conference</groupId>
+			<artifactId>conference-events-api</artifactId>
+			<type>jar</type>
+		</dependency>
+
+		<dependency>
+			<groupId>com.prodyna.pac.conference</groupId>
+			<artifactId>conference-common-ejb</artifactId>
+			<type>ejb</type>
 		</dependency>
 		<dependency>
 			<groupId>com.prodyna.pac.conference</groupId>
 			<artifactId>conference-facility-ejb</artifactId>
 			<type>ejb</type>
 		</dependency>
+		<dependency>
+			<groupId>com.prodyna.pac.conference</groupId>
+			<artifactId>conference-users-ejb</artifactId>
+			<type>ejb</type>
+		</dependency>
+		<dependency>
+			<groupId>com.prodyna.pac.conference</groupId>
+			<artifactId>conference-events-ejb</artifactId>
+			<type>ejb</type>
+		</dependency>
+		<dependency>
+			<groupId>com.prodyna.pac.conference</groupId>
+			<artifactId>conference-web</artifactId>
+			<type>war</type>
+		</dependency>
+		
 	</dependencies>
 </project>
