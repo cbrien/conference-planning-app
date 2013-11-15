@@ -1,0 +1,31 @@
+location:
+ - id: 1
+   name: "test location 1"
+   description: "this is the test location 1"
+   address: "this is the address 1\nline 2\nline3"
+ - id: 2
+   name: "test location 2"
+   description: "this is the test location 2"
+   address: "this is the address 2\nline 2\nline3"
+room:
+ - id: 1
+   name: "Room 1.1"
+   description: "this is room 1 of location 1"
+   capactiy: 10
+   location_id: 1
+ - id: 2
+   name: "Room 1.2"
+   description: "this is room 2 of location 1"
+   capactiy: 20
+   location_id: 1
+ - id: 3
+   name: "Room 2.1"
+   description: "this is room 1 of location 1"
+   capactiy: 10
+   location_id: 2
+ - id: 4
+   name: "Room 2.2"
+   description: "this is room 2 of location 1"
+   capactiy: 20
+   location_id: 2
+   
