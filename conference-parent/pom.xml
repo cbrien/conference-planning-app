@@ -7,13 +7,17 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<modules>
-		<module>conference-common</module>
-		<module>conference-service-api</module>
+		<module>conference-common-api</module>
+		<module>conference-common-ejb</module>
 		<module>conference-facility-api</module>
-		<module>conference-service-ejb</module>
 		<module>conference-facility-ejb</module>
+		<module>conference-users-api</module>
+		<module>conference-users-ejb</module>
+		<module>conference-events-api</module>
+		<module>conference-events-ejb</module>
 		<module>conference-web</module>
 		<module>conference-app</module>
+		<module>conference-ws</module>
 	</modules>
 
 	<properties>
@@ -62,21 +66,28 @@
 				ourselves in every module -->
 			<dependency>
 				<groupId>com.prodyna.pac.conference</groupId>
-				<artifactId>conference-common</artifactId>
+				<artifactId>conference-common-api</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
 			</dependency>
 
 			<dependency>
 				<groupId>com.prodyna.pac.conference</groupId>
-				<artifactId>conference-service-api</artifactId>
+				<artifactId>conference-common-ejb</artifactId>
+				<version>${project.version}</version>
+				<type>ejb</type>
+			</dependency>
+
+			<dependency>
+				<groupId>com.prodyna.pac.conference</groupId>
+				<artifactId>conference-events-api</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
 			</dependency>
 
 			<dependency>
 				<groupId>com.prodyna.pac.conference</groupId>
-				<artifactId>conference-service-ejb</artifactId>
+				<artifactId>conference-events-ejb</artifactId>
 				<version>${project.version}</version>
 				<type>ejb</type>
 			</dependency>
@@ -91,6 +102,20 @@
 			<dependency>
 				<groupId>com.prodyna.pac.conference</groupId>
 				<artifactId>conference-facility-ejb</artifactId>
+				<version>${project.version}</version>
+				<type>ejb</type>
+			</dependency>
+
+			<dependency>
+				<groupId>com.prodyna.pac.conference</groupId>
+				<artifactId>conference-users-api</artifactId>
+				<version>${project.version}</version>
+				<type>jar</type>
+			</dependency>
+
+			<dependency>
+				<groupId>com.prodyna.pac.conference</groupId>
+				<artifactId>conference-users-ejb</artifactId>
 				<version>${project.version}</version>
 				<type>ejb</type>
 			</dependency>
