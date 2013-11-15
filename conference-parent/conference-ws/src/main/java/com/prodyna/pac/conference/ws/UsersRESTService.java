@@ -21,9 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -39,6 +37,8 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.slf4j.Logger;
+
 import com.prodyna.pac.conference.users.model.User;
 import com.prodyna.pac.conference.users.service.OrganizationService;
 import com.prodyna.pac.conference.users.service.UserService;
@@ -48,9 +48,8 @@ import com.prodyna.pac.conference.users.service.UserService;
  * <p/>
  * This class produces a RESTful service to read/write the contents of the users table.
  */
-@Path("(secure/|)users")
-@RequestScoped
-public class PublicUsersRESTService {
+@Path("users")
+public class UsersRESTService {
 
     @Inject
     private Logger log;
@@ -65,14 +64,14 @@ public class PublicUsersRESTService {
     private OrganizationService organizationService;
 
     @GET
-    @Path("/user")
+    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public List<User> listUsers() {
         return userService.list();
     }
 
     @GET
-    @Path("/user/{id:[0-9][0-9]*}")
+    @Path("/{id:[0-9][0-9]*}")
     @Produces(MediaType.APPLICATION_JSON)
     public User getUser(@PathParam("id") long id) {
     	User user = userService.get(id);
@@ -87,7 +86,7 @@ public class PublicUsersRESTService {
      * or with a map of fields, and related errors.
      */
     @POST
-    @Path("/user")
+    @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createUser(User user) {
@@ -152,7 +151,7 @@ public class PublicUsersRESTService {
      * @return JAX-RS response containing all violations
      */
     private Response.ResponseBuilder createViolationResponse(Set<ConstraintViolation<?>> violations) {
-        log.fine("Validation completed. violations found: " + violations.size());
+        log.debug("Validation completed. violations found: " + violations.size());
 
         Map<String, String> responseObj = new HashMap<String, String>();
 

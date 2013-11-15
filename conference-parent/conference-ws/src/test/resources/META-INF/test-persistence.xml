@@ -26,7 +26,14 @@
          database. Production applications should use a managed datasource. -->
       <!-- The datasource is deployed as WEB-INF/test-ds.xml, 
          you can find it in the source at src/test/resources/test-ds.xml -->
-      <jta-data-source>java:jboss/datasources/jboss-javaee6-webappTestDS</jta-data-source>
+      <jta-data-source>java:jboss/datasources/ConferenceTestDS</jta-data-source>
+	  <class>com.prodyna.pac.conference.facility.model.Location</class>
+	  <class>com.prodyna.pac.conference.facility.model.Room</class>
+	  <class>com.prodyna.pac.conference.users.model.User</class>
+	  <class>com.prodyna.pac.conference.users.model.Organization</class>
+	  <class>com.prodyna.pac.conference.events.model.Conference</class>
+	  <class>com.prodyna.pac.conference.events.model.Talk</class>
+	  <class>com.prodyna.pac.conference.events.impl.Assignment</class>
       <properties>
          <!-- Properties for Hibernate -->
          <property name="hibernate.hbm2ddl.auto" value="create-drop" />
