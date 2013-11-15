@@ -32,20 +32,10 @@
 
 		<!-- Import the JPA API, we use provided scope as the API is included in 
 			JBoss AS 7 -->
-		<dependency>
-			<groupId>org.hibernate.javax.persistence</groupId>
-			<artifactId>hibernate-jpa-2.0-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
 
 		<!-- JSR-303 (Bean Validation) Implementation -->
 		<!-- Provides portable constraints such as @Email -->
 		<!-- Hibernate Validator is shipped in JBoss AS 7 -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-validator</artifactId>
-			<scope>provided</scope>
-		</dependency>
 
 
 		<!-- Test scope dependencies -->
@@ -64,7 +54,12 @@
 		</dependency>
 		<dependency>
 			<groupId>com.prodyna.pac.conference</groupId>
-			<artifactId>conference-common</artifactId>
+			<artifactId>conference-common-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.prodyna.pac.conference</groupId>
+			<artifactId>conference-common-ejb</artifactId>
+			<type>ejb</type>
 		</dependency>
 
 		<dependency>
@@ -84,6 +79,17 @@
 			<artifactId>shrinkwrap-resolver-depchain</artifactId>
 			<scope>test</scope>
 			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>javax.persistence</groupId>
+			<artifactId>persistence-api</artifactId>
+			<version>1.0.2</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
