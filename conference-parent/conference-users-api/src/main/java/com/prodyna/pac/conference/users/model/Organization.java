@@ -97,6 +97,15 @@ public class Organization implements ConferenceEntity {
 		} else if (!name.equals(other.name))
 			return false;
 		return true;
-	}   
+	} 
+	
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		Organization organization = new Organization();
+		organization.setId(id);
+		organization.setName(name);
+		organization.setDescription(description);
+		return organization;
+	}
 
 }

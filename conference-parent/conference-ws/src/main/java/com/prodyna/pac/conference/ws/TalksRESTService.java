@@ -42,21 +42,25 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
 
+import com.prodyna.pac.conference.events.model.Conference;
+import com.prodyna.pac.conference.events.model.Talk;
+import com.prodyna.pac.conference.events.service.TalkService;
+import com.prodyna.pac.conference.facility.model.Room;
 import com.prodyna.pac.conference.users.model.User;
-import com.prodyna.pac.conference.users.service.UserService;
 
 /**
- * JAX-RS REST Service for the conference user service
+ * JAX-RS Example
  * <p/>
- * This class produces a RESTful service to read/write the contents of the users table.
+ * This class produces a RESTful service to read/write the contents of the talks table.
  */
-@Path("users")
-public class UsersRESTService {
+@Path("talks")
+public class TalksRESTService {
 
     @Inject
     private Logger log;
@@ -65,57 +69,117 @@ public class UsersRESTService {
     private Validator validator;
 
     @Inject
-    private UserService userService;
+    private TalkService talkService;
 
-    /**
-     * returns a list with all users
-     * @return
-     */
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public List<User> listUsers() {
-        return userService.list();
+    public List<Talk> listTalks() {
+        return talkService.list();
     }
 
-    /**
-     * returns the user with the given id
-     * @param id
-     * @return
-     */
     @GET
     @Path("/{id:[0-9][0-9]*}")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public User getUser(@PathParam("id") long id) {
-    	User user = userService.get(id);
-        if (user == null) {
+    public Talk getTalk(@PathParam("id") long id) {
+    	Talk talk = talkService.get(id);
+        if (talk == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
-        return user;
+        return talk;
+    }
+
+    @GET
+    @Path("/{id:[0-9][0-9]*}/speakers/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
+    public List<User> getSpeakersByTalk(@PathParam("id") long id) {
+    	Talk talk = talkService.get(id);
+        if (talk == null) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+        return talkService.findSpeakersForTalk(talk);
     }
     
-    /**
-     * updates the user with the given id
-     * @param id
-     * @param user
-     * @param ui
-     * @return
-     */
+    @PUT
+    @Path("/{id:[0-9][0-9]*}/speakers/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @PermitAll
+    public Response addSpeakerToTalk(@PathParam("id") long id, User user) {
+    	Talk talk = talkService.get(id);
+        if (talk == null) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+        talk.getSpeakers().add(user);
+        ResponseBuilder builder = null;
+		try {
+        	validateTalk(talk);
+			talkService.update(talk);
+            builder  = Response.ok();
+        } catch (ConstraintViolationException ce) {
+            // Handle bean validation issues
+            builder = createViolationResponse(ce.getConstraintViolations());
+        } catch (ValidationException e) {
+            // Handle the unique constrain violation
+            Map<String, String> responseObj = new HashMap<String, String>();
+            responseObj.put("email", "Email taken");
+            builder = Response.status(Response.Status.CONFLICT).entity(responseObj);
+        } catch (Exception e) {
+            // Handle generic exceptions
+            Map<String, String> responseObj = new HashMap<String, String>();
+            responseObj.put("error", e.getMessage());
+            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+        }
+        return builder.build();
+    }
+    
+    @GET
+    @Path("/speaker/{id:[0-9][0-9]*}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
+    public List<Talk> getTalksBySpeaker(@PathParam("id") long id) {
+    	User user = new User();
+    	user.setId(id);
+    	return talkService.findBySpeaker(user);
+    }
+
+    @GET
+    @Path("/room/{id:[0-9][0-9]*}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
+    public List<Talk> getTalksByRoom(@PathParam("id") long id) {
+    	Room room = new Room();
+    	room.setId(id);
+    	return talkService.findByRoom(room);
+    }
+
+    @GET
+    @Path("/conference/{id:[0-9][0-9]*}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
+    public List<Talk> getTalksByConference(@PathParam("id") long id) {
+    	Conference conference = new Conference();
+    	conference.setId(id);
+    	return talkService.findByConference(conference);
+    }
+    
+    
     @PUT
     @Path("/{id:[0-9][0-9]*}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"conference-admin"})
-    public Response putUser(@PathParam("id") long id, User user, @Context UriInfo ui) {
-    	user.setId(id);
+    public Response putTalk(@PathParam("id") long id, Talk talk, @Context UriInfo ui) {
+    	talk.setId(id);
     	Response.ResponseBuilder builder = null;
 
         try {
-            // Validates user using bean validation
-            validateUser(user);
-            userService.update(user);
+            // Validates talk using bean validation
+            validateTalk(talk);
+            talkService.update(talk);
             // Create an "ok" response
             builder = Response.ok();
         } catch (ConstraintViolationException ce) {
@@ -137,7 +201,7 @@ public class UsersRESTService {
     }
     
     /**
-     * deletes the user with the given id
+     * deletes the talk with the given id
      * @param id
      * @return ok or not found
      */
@@ -145,16 +209,16 @@ public class UsersRESTService {
     @Path("/{id:[0-9][0-9]*}")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"conference-admin"})
-    public Response deleteUser(@PathParam("id") long id) {
+    public Response deleteTalk(@PathParam("id") long id) {
 
-        User user = userService.get(id);
-    	if (user == null) {
+        Talk talk = talkService.get(id);
+    	if (talk == null) {
     		return Response.status(Status.NOT_FOUND).build();
     	}
     	
     	Response.ResponseBuilder builder = null;
         try {
-            userService.delete(id);
+            talkService.delete(id);
             // Create an "ok" response
             builder = Response.ok();
         } catch (ConstraintViolationException ce) {
@@ -171,7 +235,7 @@ public class UsersRESTService {
     }
     
     /**
-     * Creates a new user from the values provided. Performs validation, and will return a JAX-RS response with either 200 ok,
+     * Creates a new talk from the values provided. Performs validation, and will return a JAX-RS response with either 200 ok,
      * or with a map of fields, and related errors.
      */
     @POST
@@ -179,15 +243,15 @@ public class UsersRESTService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"conference-admin"})
-    public Response createUser(User user, @Context UriInfo ui) {
+    public Response createTalk(Talk talk, @Context UriInfo ui) {
 
         Response.ResponseBuilder builder = null;
 
         try {
-            // Validates user using bean validation
-            validateUser(user);
-            userService.add(user);
-            URI uri = ui.getAbsolutePathBuilder().path(String.valueOf(user.getId())).build(new Object[0]);
+            // Validates talk using bean validation
+            validateTalk(talk);
+            talkService.add(talk);
+            URI uri = ui.getAbsolutePathBuilder().path(String.valueOf(talk.getId())).build(new Object[0]);
             // Create an "ok" response
             builder = Response.created(uri);
         } catch (ConstraintViolationException ce) {
@@ -210,21 +274,21 @@ public class UsersRESTService {
 
     /**
      * <p>
-     * Validates the given User variable and throws validation exceptions based on the type of error. If the error is standard
+     * Validates the given Talk variable and throws validation exceptions based on the type of error. If the error is standard
      * bean validation errors then it will throw a ConstraintValidationException with the set of the constraints violated.
      * </p>
      * <p>
-     * If the error is caused because an existing user with the same email is registered it throws a regular validation
+     * If the error is caused because an existing talk with the same email is registered it throws a regular validation
      * exception so that it can be interpreted separately.
      * </p>
      * 
-     * @param user User to be validated
+     * @param talk Talk to be validated
      * @throws ConstraintViolationException If Bean Validation errors exist
-     * @throws ValidationException If user with the same email already exists
+     * @throws ValidationException If talk with the same email already exists
      */
-    private void validateUser(User user) throws ConstraintViolationException, ValidationException {
+    private void validateTalk(Talk talk) throws ConstraintViolationException, ValidationException {
         // Create a bean validator and check for issues.
-        Set<ConstraintViolation<User>> violations = validator.validate(user);
+        Set<ConstraintViolation<Talk>> violations = validator.validate(talk);
 
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(new HashSet<ConstraintViolation<?>>(violations));

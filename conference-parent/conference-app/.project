@@ -3,6 +3,7 @@
 	<name>conference-app</name>
 	<comment></comment>
 	<projects>
+		<project>conference-events-ejb</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

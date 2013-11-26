@@ -54,12 +54,12 @@ public class Conference implements ConferenceEntity {
 
 	/** The start date. */
 	@NotNull
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date startDate;
 
 	/** The end date. */
 	@NotNull
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date endDate;
 
 	/** The Constant serialVersionUID. */
@@ -184,6 +184,18 @@ public class Conference implements ConferenceEntity {
 	 */
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+	
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		Conference conference = new Conference();
+		conference.setId(id);
+		conference.setName(name);
+		conference.setDescription(description);
+		conference.setStartDate(startDate);
+		conference.setEndDate(endDate);
+		conference.setLocation(location);
+		return conference;
 	}
 
 }

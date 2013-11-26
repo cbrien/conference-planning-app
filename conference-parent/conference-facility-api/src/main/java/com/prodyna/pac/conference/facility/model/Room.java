@@ -132,4 +132,16 @@ public class Room implements ConferenceEntity {
 			return false;
 		return true;
 	}
+	
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		Room room = new Room();
+		room.setId(id);
+		room.setName(name);
+		room.setDescription(description);
+		room.setCapacity(capacity);
+		room.setLocation(location);
+		return room;
+	}
+	
 }

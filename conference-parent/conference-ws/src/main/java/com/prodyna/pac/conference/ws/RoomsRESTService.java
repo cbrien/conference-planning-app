@@ -42,21 +42,22 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.Response.Status;
 
 import org.slf4j.Logger;
 
+import com.prodyna.pac.conference.facility.model.Room;
+import com.prodyna.pac.conference.facility.service.RoomService;
 import com.prodyna.pac.conference.users.model.User;
-import com.prodyna.pac.conference.users.service.UserService;
 
 /**
- * JAX-RS REST Service for the conference user service
+ * JAX-RS Example
  * <p/>
- * This class produces a RESTful service to read/write the contents of the users table.
+ * This class produces a RESTful service to read/write the contents of the rooms table.
  */
-@Path("users")
-public class UsersRESTService {
+@Path("rooms")
+public class RoomsRESTService {
 
     @Inject
     private Logger log;
@@ -65,57 +66,41 @@ public class UsersRESTService {
     private Validator validator;
 
     @Inject
-    private UserService userService;
+    private RoomService roomService;
 
-    /**
-     * returns a list with all users
-     * @return
-     */
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public List<User> listUsers() {
-        return userService.list();
+    public List<Room> listRooms() {
+        return roomService.list();
     }
 
-    /**
-     * returns the user with the given id
-     * @param id
-     * @return
-     */
     @GET
     @Path("/{id:[0-9][0-9]*}")
     @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public User getUser(@PathParam("id") long id) {
-    	User user = userService.get(id);
-        if (user == null) {
+    public Room getRoom(@PathParam("id") long id) {
+    	Room room = roomService.get(id);
+        if (room == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
-        return user;
+        return room;
     }
     
-    /**
-     * updates the user with the given id
-     * @param id
-     * @param user
-     * @param ui
-     * @return
-     */
     @PUT
     @Path("/{id:[0-9][0-9]*}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"conference-admin"})
-    public Response putUser(@PathParam("id") long id, User user, @Context UriInfo ui) {
-    	user.setId(id);
+    public Response putRoom(@PathParam("id") long id, Room room, @Context UriInfo ui) {
+    	room.setId(id);
     	Response.ResponseBuilder builder = null;
 
         try {
-            // Validates user using bean validation
-            validateUser(user);
-            userService.update(user);
+            // Validates room using bean validation
+            validateRoom(room);
+            roomService.update(room);
             // Create an "ok" response
             builder = Response.ok();
         } catch (ConstraintViolationException ce) {
@@ -137,7 +122,7 @@ public class UsersRESTService {
     }
     
     /**
-     * deletes the user with the given id
+     * deletes the room with the given id
      * @param id
      * @return ok or not found
      */
@@ -145,16 +130,16 @@ public class UsersRESTService {
     @Path("/{id:[0-9][0-9]*}")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"conference-admin"})
-    public Response deleteUser(@PathParam("id") long id) {
+    public Response deleteRoom(@PathParam("id") long id) {
 
-        User user = userService.get(id);
-    	if (user == null) {
+        Room room = roomService.get(id);
+    	if (room == null) {
     		return Response.status(Status.NOT_FOUND).build();
     	}
     	
     	Response.ResponseBuilder builder = null;
         try {
-            userService.delete(id);
+            roomService.delete(id);
             // Create an "ok" response
             builder = Response.ok();
         } catch (ConstraintViolationException ce) {
@@ -168,10 +153,9 @@ public class UsersRESTService {
         }
 
         return builder.build();
-    }
-    
+    }    
     /**
-     * Creates a new user from the values provided. Performs validation, and will return a JAX-RS response with either 200 ok,
+     * Creates a new room from the values provided. Performs validation, and will return a JAX-RS response with either 200 ok,
      * or with a map of fields, and related errors.
      */
     @POST
@@ -179,15 +163,15 @@ public class UsersRESTService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"conference-admin"})
-    public Response createUser(User user, @Context UriInfo ui) {
+    public Response createRoom(Room room, @Context UriInfo ui) {
 
         Response.ResponseBuilder builder = null;
 
         try {
-            // Validates user using bean validation
-            validateUser(user);
-            userService.add(user);
-            URI uri = ui.getAbsolutePathBuilder().path(String.valueOf(user.getId())).build(new Object[0]);
+            // Validates room using bean validation
+            validateRoom(room);
+            roomService.add(room);
+            URI uri = ui.getAbsolutePathBuilder().path(String.valueOf(room.getId())).build(new Object[0]);
             // Create an "ok" response
             builder = Response.created(uri);
         } catch (ConstraintViolationException ce) {
@@ -210,21 +194,21 @@ public class UsersRESTService {
 
     /**
      * <p>
-     * Validates the given User variable and throws validation exceptions based on the type of error. If the error is standard
+     * Validates the given Room variable and throws validation exceptions based on the type of error. If the error is standard
      * bean validation errors then it will throw a ConstraintValidationException with the set of the constraints violated.
      * </p>
      * <p>
-     * If the error is caused because an existing user with the same email is registered it throws a regular validation
+     * If the error is caused because an existing room with the same email is registered it throws a regular validation
      * exception so that it can be interpreted separately.
      * </p>
      * 
-     * @param user User to be validated
+     * @param room Room to be validated
      * @throws ConstraintViolationException If Bean Validation errors exist
-     * @throws ValidationException If user with the same email already exists
+     * @throws ValidationException If room with the same email already exists
      */
-    private void validateUser(User user) throws ConstraintViolationException, ValidationException {
+    private void validateRoom(Room room) throws ConstraintViolationException, ValidationException {
         // Create a bean validator and check for issues.
-        Set<ConstraintViolation<User>> violations = validator.validate(user);
+        Set<ConstraintViolation<Room>> violations = validator.validate(room);
 
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(new HashSet<ConstraintViolation<?>>(violations));

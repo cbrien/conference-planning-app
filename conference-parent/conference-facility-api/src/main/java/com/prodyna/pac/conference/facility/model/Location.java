@@ -113,5 +113,15 @@ public class Location implements ConferenceEntity {
 			return false;
 		return true;
 	}
+	
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		Location location = new Location();
+		location.setId(id);
+		location.setName(name);
+		location.setAddress(address);
+		location.setDescription(description);
+		return location;
+	}
    
 }

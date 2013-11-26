@@ -241,5 +241,18 @@ public class Talk implements ConferenceEntity {
 	public void setConference(Conference conference) {
 		this.conference = conference;
 	}
+	
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		Talk talk = new Talk();
+		talk.setId(id);
+		talk.setName(name);
+		talk.setDescription(description);
+		talk.setStartDate(startDate);
+		talk.setLength(length);
+		talk.setRoom(room);
+		talk.getSpeakers().addAll(speakers);
+		return talk;
+	}
 
 }

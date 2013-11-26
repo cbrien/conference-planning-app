@@ -22,6 +22,7 @@ import com.prodyna.pac.conference.events.messaging.TalkChanged;
 import com.prodyna.pac.conference.events.messaging.TalkDeleted;
 import com.prodyna.pac.conference.events.model.Conference;
 import com.prodyna.pac.conference.events.model.Talk;
+import com.prodyna.pac.conference.events.service.ConferenceService;
 import com.prodyna.pac.conference.events.service.TalkService;
 import com.prodyna.pac.conference.facility.model.Room;
 import com.prodyna.pac.conference.users.model.User;
@@ -40,7 +41,10 @@ public class TalkServiceBean extends AbstractBaseConferenceServiceBean<Talk>
 
 	@Inject
 	AssignmentServiceBean assignmentService;
-	
+
+	@Inject
+	ConferenceService conferenceService;
+
 	@Inject
 	@TalkChanged
 	Event<Talk> talkChangedEvent;
@@ -88,6 +92,13 @@ public class TalkServiceBean extends AbstractBaseConferenceServiceBean<Talk>
 		deleteTalkSpeakers(talk);
 		super.delete(id);
 		talkDeletedEvent.fire(talk);
+	}
+	
+	@Override
+	public Talk get(long id) {
+		Talk talk = super.get(id);
+		talk.getSpeakers().addAll(findSpeakersForTalk(talk));
+		return talk;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -147,7 +158,8 @@ public class TalkServiceBean extends AbstractBaseConferenceServiceBean<Talk>
 	}
 
 	private void isDuringConference(Talk talk) {
-		Conference conference = talk.getConference();
+		Long conferenceId = talk.getConference().getId();
+		Conference conference = conferenceService.get(conferenceId);
 		if (!isInside(talk, conference)) {
 			throw new NotDuringConferenceException(conference);
 		}

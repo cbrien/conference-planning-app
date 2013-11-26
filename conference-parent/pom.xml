@@ -7,6 +7,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<modules>
+		<module>arquillian-suite-extension</module>
 		<module>conference-common-api</module>
 		<module>conference-common-ejb</module>
 		<module>conference-facility-api</module>
@@ -53,10 +54,17 @@
 		<version.ejb.plugin>2.3</version.ejb.plugin>
 		<version.surefire.plugin>2.4.3</version.surefire.plugin>
 		<version.war.plugin>2.1.1</version.war.plugin>
+		<version.source.plugin>2.1.2</version.source.plugin>
+		<version.javadoc.plugin>2.9.1</version.javadoc.plugin>
 
 		<!-- maven-compiler-plugin -->
 		<maven.compiler.target>1.6</maven.compiler.target>
 		<maven.compiler.source>1.6</maven.compiler.source>
+		<version.arquillian.persistence>1.0.0.Alpha6</version.arquillian.persistence>
+		<version.arquillian.rest-warp>1.0.0.Alpha1</version.arquillian.rest-warp>
+		<version.arquillian.suite>1.0.1-SNAPSHOT</version.arquillian.suite>
+		<version.jackson-mapper-asl>1.9.2</version.jackson-mapper-asl>
+		<version.jaxb-api>2.2</version.jaxb-api>
 	</properties>
 
 	<dependencyManagement>
@@ -127,7 +135,12 @@
 				<artifactId>conference-web</artifactId>
 				<version>${project.version}</version>
 				<type>war</type>
-				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.prodyna.pac.conference</groupId>
+				<artifactId>conference-ws</artifactId>
+				<version>${project.version}</version>
+				<type>war</type>
 			</dependency>
 
 			<!-- JBoss distributes a complete set of Java EE 6 APIs including a Bill 
@@ -189,9 +202,11 @@
 						<skip>true</skip>
 					</configuration>
 				</plugin>
+
 			</plugins>
 		</pluginManagement>
 	</build>
+
 	<profiles>
 		<profile>
 			<!-- The default profile skips all tests, though you can tune it to run 
@@ -210,6 +225,46 @@
 						<configuration>
 							<skip>true</skip>
 						</configuration>
+					</plugin>
+					<plugin>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>${version.source.plugin}</version>
+						<executions>
+							<execution>
+								<id>bundle-sources</id>
+								<phase>package</phase>
+								<goals>
+									<!-- produce source artifact for main project sources -->
+									<goal>jar-no-fork</goal>
+
+									<!-- produce source artifact for project test sources -->
+									<goal>test-jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>${version.javadoc.plugin}</version>
+						<executions>
+							<execution>
+								<id>javadoc-jar</id>
+								<phase>package</phase>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+								<configuration>
+									<!-- switch on dependency-driven aggregation -->
+									<includeDependencySources>true</includeDependencySources>
+
+									<dependencySourceExcludes>
+										<!-- exclude ONLY commons-cli artifacts -->
+										<dependencySourceExclude>commons-cli:*</dependencySourceExclude>
+									</dependencySourceExcludes>
+								</configuration>
+							</execution>
+						</executions>
 					</plugin>
 				</plugins>
 			</build>

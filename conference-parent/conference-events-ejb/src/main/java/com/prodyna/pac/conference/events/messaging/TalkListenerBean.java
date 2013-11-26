@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -14,7 +15,6 @@ import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
-import javax.naming.InitialContext;
 
 import org.slf4j.Logger;
 
@@ -37,9 +37,13 @@ public class TalkListenerBean implements Serializable {
 	/** The logger. */
 	@Inject
 	Logger logger;
-
+	
+	@Resource(mappedName="java:/ConnectionFactory")
 	QueueConnectionFactory connectionFactory;
-	/** The connection. */
+	
+	@Resource(mappedName="java:/" + DESTINATION_NAME)
+	Queue queue;
+	
 	private QueueConnection connection;
 
 	private QueueSession session;
@@ -52,10 +56,8 @@ public class TalkListenerBean implements Serializable {
 	@PostConstruct
 	private void openConnection() {
 		try {
-			connectionFactory = (QueueConnectionFactory) InitialContext.doLookup("ConnectionFactory");
 			connection = connectionFactory.createQueueConnection();
 			session = connection.createQueueSession(true, 1);
-			Queue queue = (Queue) InitialContext.doLookup(DESTINATION_NAME);
 			sender = session.createSender(queue);
 		} catch (Exception e) {
 			logger.error("could not create JMS connection", e);

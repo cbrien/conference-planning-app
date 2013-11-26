@@ -238,5 +238,19 @@ public class User implements ConferenceEntity {
 			return false;
 		return true;
 	}
+	
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		User user = new User();
+		user.setId(id);
+		user.setEmail(email);
+		user.setFirstname(firstname);
+		user.setLastname(lastname);
+		user.setDescription(description);
+		user.setAddress(address);
+		user.setDateOfBirth(dateOfBirth);
+		user.setOrganization(organization);
+		return user;
+	}
 
 }
