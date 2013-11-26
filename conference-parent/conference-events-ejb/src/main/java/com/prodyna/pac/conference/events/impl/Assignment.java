@@ -112,6 +112,70 @@ public class Assignment implements ConferenceEntity {
 	public void setTalk(Talk talk) {
 		this.talk = talk;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((speaker == null) ? 0 : speaker.hashCode());
+		result = prime * result + ((talk == null) ? 0 : talk.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Assignment other = (Assignment) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (speaker == null) {
+			if (other.speaker != null)
+				return false;
+		} else if (!speaker.equals(other.speaker))
+			return false;
+		if (talk == null) {
+			if (other.talk != null)
+				return false;
+		} else if (!talk.equals(other.talk))
+			return false;
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		Assignment assignment = new Assignment();
+		assignment.setId(id);
+		assignment.setSpeaker(speaker);
+		assignment.setTalk(talk);
+		return assignment ;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Assignment [id=" + id + ", speaker=" + speaker + ", talk="
+				+ talk + "]";
+	}
 	
 
 }

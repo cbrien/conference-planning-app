@@ -19,6 +19,7 @@
 		<module>conference-web</module>
 		<module>conference-app</module>
 		<module>conference-ws</module>
+		<module>conference-dist</module>
 	</modules>
 
 	<properties>
@@ -143,6 +144,13 @@
 				<type>war</type>
 			</dependency>
 
+			<dependency>
+				<groupId>com.prodyna.pac.conference</groupId>
+				<artifactId>conference-app</artifactId>
+				<version>${project.version}</version>
+				<type>ear</type>
+			</dependency>
+
 			<!-- JBoss distributes a complete set of Java EE 6 APIs including a Bill 
 				of Materials (BOM). A BOM specifies the versions of a "stack" (or a collection) 
 				of artifacts. We use this here so that we always get the correct versions 
@@ -202,7 +210,24 @@
 						<skip>true</skip>
 					</configuration>
 				</plugin>
-
+				<plugin>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>2.4</version>
+					<executions>
+						<execution>
+							<id>create-project-bundle</id>
+							<phase>package</phase>
+							<goals>
+								<goal>single</goal>
+							</goals>
+							<configuration>
+								<descriptorRefs>
+									<descriptorRef>project</descriptorRef>
+								</descriptorRefs>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -254,17 +279,12 @@
 								<goals>
 									<goal>jar</goal>
 								</goals>
-								<configuration>
-									<!-- switch on dependency-driven aggregation -->
-									<includeDependencySources>true</includeDependencySources>
-
-									<dependencySourceExcludes>
-										<!-- exclude ONLY commons-cli artifacts -->
-										<dependencySourceExclude>commons-cli:*</dependencySourceExclude>
-									</dependencySourceExcludes>
-								</configuration>
 							</execution>
 						</executions>
+					</plugin>
+
+					<plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
 					</plugin>
 				</plugins>
 			</build>
@@ -327,4 +347,9 @@
 		</profile>
 
 	</profiles>
+	<scm>
+		<developerConnection>scm:git:ssh://cbrien@github.com:cbrien/conference-planning-app.git</developerConnection>
+		<url>https://github.com/cbrien/conference-planning-app.git</url>
+	</scm>
+
 </project>

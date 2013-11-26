@@ -9,12 +9,18 @@ import javax.persistence.Query;
 
 import org.slf4j.Logger;
 
+import com.prodyna.pac.conference.common.access.Logged;
+import com.prodyna.pac.conference.common.audit.Audited;
+import com.prodyna.pac.conference.common.exceptions.ConferenceServiceException;
 import com.prodyna.pac.conference.common.impl.AbstractBaseConferenceServiceBean;
+import com.prodyna.pac.conference.common.monitor.Monitored;
 import com.prodyna.pac.conference.facility.model.Location;
 import com.prodyna.pac.conference.facility.model.Room;
 import com.prodyna.pac.conference.facility.service.RoomService;
 
 @Stateless
+@Logged
+@Monitored
 public class RoomServiceBean extends AbstractBaseConferenceServiceBean<Room> implements RoomService {
 
 	@Inject
@@ -43,6 +49,18 @@ public class RoomServiceBean extends AbstractBaseConferenceServiceBean<Room> imp
 		Query query = em.createNamedQuery(Room.FIND_ROOMS_BY_LOCATION);
 		query.setParameter("location", location);
 		return query.getResultList();
+	}
+	
+	@Override
+	@Audited
+	public Long add(Room object) throws ConferenceServiceException {
+		return super.add(object);
+	}
+	
+	@Override
+	@Audited
+	public void update(Room object) throws ConferenceServiceException {
+		super.update(object);
 	}
 
 }

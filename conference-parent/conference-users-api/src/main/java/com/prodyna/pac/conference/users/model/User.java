@@ -27,7 +27,7 @@ import com.prodyna.pac.conference.common.util.Constants;
 @Entity
 @XmlRootElement
 @Table(name = "conf_user", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
-@NamedQuery(name=User.FIND_USERS_BY_ORGANIZATION, query="select u from User u where u.organization=:organization")
+@NamedQuery(name = User.FIND_USERS_BY_ORGANIZATION, query = "select u from User u where u.organization=:organization")
 public class User implements ConferenceEntity {
 
 	public static final String FIND_USERS_BY_ORGANIZATION = "findUsersByOrganization";
@@ -37,7 +37,7 @@ public class User implements ConferenceEntity {
 	private Long id;
 
 	@NotNull
-	@Size(min=2,max=255)
+	@Size(min = 2, max = 255)
 	private String firstname;
 
 	@NotNull
@@ -55,7 +55,7 @@ public class User implements ConferenceEntity {
 	private String description;
 
 	private String address;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "org_id")
 	private Organization organization;
@@ -161,7 +161,9 @@ public class User implements ConferenceEntity {
 		this.organization = organization;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -184,7 +186,9 @@ public class User implements ConferenceEntity {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -238,7 +242,12 @@ public class User implements ConferenceEntity {
 			return false;
 		return true;
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#clone()
+	 */
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		User user = new User();
@@ -251,6 +260,19 @@ public class User implements ConferenceEntity {
 		user.setDateOfBirth(dateOfBirth);
 		user.setOrganization(organization);
 		return user;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", firstname=" + firstname + ", lastname="
+				+ lastname + ", email=" + email + ", dateOfBirth="
+				+ dateOfBirth + ", description=" + description + ", address="
+				+ address + ", organization=" + organization + "]";
 	}
 
 }

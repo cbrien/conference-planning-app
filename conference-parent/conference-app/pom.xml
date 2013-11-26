@@ -94,6 +94,6 @@
 			<artifactId>conference-ws</artifactId>
 			<type>war</type>
 		</dependency>
-		
+
 	</dependencies>
 </project>

@@ -70,6 +70,9 @@ public class Location implements ConferenceEntity {
 		this.address = address;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -82,6 +85,9 @@ public class Location implements ConferenceEntity {
 		return result;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -114,6 +120,9 @@ public class Location implements ConferenceEntity {
 		return true;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#clone()
+	 */
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		Location location = new Location();
@@ -123,5 +132,13 @@ public class Location implements ConferenceEntity {
 		location.setDescription(description);
 		return location;
 	}
-   
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Location [id=" + id + ", name=" + name + ", description="
+				+ description + ", address=" + address + "]";
+	}
+	
 }

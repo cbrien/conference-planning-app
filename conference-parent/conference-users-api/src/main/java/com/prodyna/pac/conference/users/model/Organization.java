@@ -13,10 +13,10 @@ import com.prodyna.pac.conference.common.model.ConferenceEntity;
 
 /**
  * Entity implementation class for Entity: Room
- *
+ * 
  */
 @Entity
-@Table(name="conf_org", uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
+@Table(name = "conf_org", uniqueConstraints = @UniqueConstraint(columnNames = { "name" }))
 public class Organization implements ConferenceEntity {
 
 	private static final long serialVersionUID = 1L;
@@ -24,31 +24,34 @@ public class Organization implements ConferenceEntity {
 	@Id
 	@GeneratedValue
 	private Long id;
-	
+
 	@NotNull
-	@Size(min=3, max=255)
-	@Column(name = "name", length=255)
+	@Size(min = 3, max = 255)
+	@Column(name = "name", length = 255)
 	private String name;
-	
+
 	private String description;
-	
+
 	public Organization() {
 		super();
-	}   
+	}
+
 	public Long getId() {
 		return this.id;
 	}
 
 	public void setId(Long id) {
 		this.id = id;
-	}   
+	}
+
 	public String getName() {
 		return this.name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
-	}   
+	}
+
 	public String getDescription() {
 		return this.description;
 	}
@@ -56,7 +59,10 @@ public class Organization implements ConferenceEntity {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -69,7 +75,10 @@ public class Organization implements ConferenceEntity {
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -97,8 +106,13 @@ public class Organization implements ConferenceEntity {
 		} else if (!name.equals(other.name))
 			return false;
 		return true;
-	} 
-	
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#clone()
+	 */
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		Organization organization = new Organization();
@@ -106,6 +120,17 @@ public class Organization implements ConferenceEntity {
 		organization.setName(name);
 		organization.setDescription(description);
 		return organization;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Organization [id=" + id + ", name=" + name + ", description="
+				+ description + "]";
 	}
 
 }

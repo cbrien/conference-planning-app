@@ -9,8 +9,6 @@ import javax.persistence.criteria.CriteriaQuery;
 
 import org.slf4j.Logger;
 
-import com.prodyna.pac.conference.common.access.Logged;
-import com.prodyna.pac.conference.common.audit.Audited;
 import com.prodyna.pac.conference.common.exceptions.ConferenceServiceException;
 import com.prodyna.pac.conference.common.model.ConferenceEntity;
 import com.prodyna.pac.conference.common.service.BaseConferenceService;
@@ -33,7 +31,6 @@ public abstract class AbstractBaseConferenceServiceBean<T extends ConferenceEnti
 		return getEm().find(entityClass, id);
 	}
 
-	@Audited("id")
 	@Override
 	public Long add(T object) throws ConferenceServiceException {
 		if (object != null && object.getId() != null
@@ -53,7 +50,6 @@ public abstract class AbstractBaseConferenceServiceBean<T extends ConferenceEnti
 		}
 	}
 
-	@Audited("id")
 	@Override
 	public void update(T object) throws ConferenceServiceException {
 		if (object == null || get(object.getId()) == null) {

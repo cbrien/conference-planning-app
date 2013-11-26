@@ -85,6 +85,9 @@ public class Room implements ConferenceEntity {
 	public void setLocation(Location location) {
 		this.location = location;
 	}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -99,6 +102,9 @@ public class Room implements ConferenceEntity {
 		return result;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -133,6 +139,9 @@ public class Room implements ConferenceEntity {
 		return true;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#clone()
+	 */
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		Room room = new Room();
@@ -143,5 +152,16 @@ public class Room implements ConferenceEntity {
 		room.setLocation(location);
 		return room;
 	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Room [id=" + id + ", name=" + name + ", description="
+				+ description + ", capacity=" + capacity + ", location="
+				+ location + "]";
+	}
+	
 	
 }
