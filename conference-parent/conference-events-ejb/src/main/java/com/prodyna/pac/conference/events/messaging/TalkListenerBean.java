@@ -107,7 +107,7 @@ public class TalkListenerBean implements Serializable {
 	private void sendMessage(Talk talk, boolean updated) {
 		try {
 			Message message = session.createMessage();
-			message.setLongProperty("talkId", talk.getId());
+			message.setStringProperty("talk", talk.toString());
 			message.setBooleanProperty("deleted", !updated);
 			sender.send(message);
 		} catch (JMSException e) {
