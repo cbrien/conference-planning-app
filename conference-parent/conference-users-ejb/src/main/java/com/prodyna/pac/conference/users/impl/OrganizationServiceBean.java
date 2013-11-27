@@ -1,6 +1,7 @@
 package com.prodyna.pac.conference.users.impl;
 
 import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
@@ -25,6 +26,10 @@ public class OrganizationServiceBean extends AbstractBaseConferenceServiceBean<O
 	@Inject
 	EntityManager em;
 	
+	@Inject
+	Event<Organization> organizationChanged;
+
+	
 	public OrganizationServiceBean() {
 		super(Organization.class);
 	}
@@ -37,6 +42,11 @@ public class OrganizationServiceBean extends AbstractBaseConferenceServiceBean<O
 	@Override
 	protected Logger getLogger() {
 		return logger;
+	}
+	
+	@Override
+	protected Event<Organization> getChangedEvent() {
+		return organizationChanged;
 	}
 	
 	@Override

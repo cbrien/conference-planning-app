@@ -1,96 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-    JBoss, Home of Professional Open Source
-    Copyright 2013, Red Hat, Inc. and/or its affiliates, and individual
-    contributors by the @authors tag. See the copyright.txt in the
-    distribution for a full listing of individual contributors.
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-    http://www.apache.org/licenses/LICENSE-2.0
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
--->
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition template="/WEB-INF/templates/default.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	template="/WEB-INF/templates/default.xhtml">
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:my="http://java.sun.com/jsf/composite/components">
 	<ui:define name="content">
-		<h1>List of available conferences</h1>
+		<h:outputStylesheet name="app.css" library="css" />
+		<h:outputScript target="head" name="showMessage.js" library="js" />
 
-		<h:form id="reg">
-			<h:panelGrid columns="3" columnClasses="titleCell">
-                <h:outputLabel for="name" value="Name:" />
-                <h:inputText id="name" value="#{conference.name}" />
-                <h:message for="name" errorClass="invalid" />
+		<h1>Welcome to the Conference center</h1>
 
-                <h:outputLabel for="description" value="Description:" />
-                <h:inputText id="description" value="#{conference.description}" />
-                <h:message for="description" errorClass="invalid" />
+		<div>
+			<p>Please find a list of available conferences</p>
+		</div>
 
-                <h:outputLabel for="location" value="Location:" />
-                <h:selectOneMenu value="#{conference.location}" >
-                	<f:selectItems binding="#{conferenceController.locationSelects}">
-                	</f:selectItems>
-                </h:selectOneMenu>
-                
-                <!-- <h:inputText id="location" value="#{conference.location}">
-                	
-                </h:inputText> -->
-                <h:message for="location" errorClass="invalid" />
-
-                <h:outputLabel for="startdate" value="Start date:" />
-                <h:inputText id="startdate" value="#{conference.startDate}">
-                		<f:convertDateTime pattern="dd.MM.yyyy" timeZone="Europe/Berlin" />
-                </h:inputText>
-                <h:message for="startdate" errorClass="invalid" />
-
-                <h:outputLabel for="enddate" value="Start date:" />
-                <h:inputText id="enddate" value="#{conference.endDate}" >
-                		<f:convertDateTime pattern="dd.MM.yyyy" timeZone="Europe/Berlin" />
-                </h:inputText>
-                <h:message for="enddate" errorClass="invalid" />
-            </h:panelGrid>
-
-			<h:commandButton action="#{conferenceController.saveConference()}" value="Save" immediate="true"/>
-		</h:form>		
-
-			<h:panelGroup rendered="#{empty conferences}">
-				<em>No registered conferences.</em>
-			</h:panelGroup>
-			
-			
-			<h:dataTable var="_conference" value="#{conferences}"
-				rendered="#{not empty conferences}" styleClass="simpletablestyle">
-				<h:column>
-					<f:facet name="header">Name</f:facet>
-					<h:commandLink action="#{conferenceController.showConference()}"
-						value="#{_conference.name}">
-						<f:setPropertyActionListener target="#{conferenceController.conference}" value="#{_conference}" />
-					</h:commandLink>
-				</h:column>
-				<h:column>
-					<f:facet name="header">Location</f:facet>
-					<h:outputText value=" #{_conference.location.name}" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">Start date</f:facet>
-					<h:outputText value="#{_conference.startDate}">
-						<f:convertDateTime pattern="dd.MM.yyyy" timeZone="Europe/Berlin" />
-					</h:outputText>
-				</h:column>
-				<h:column>
-					<f:facet name="header">End date</f:facet>
-					<h:outputText value="#{_conference.endDate}">
-						<f:convertDateTime pattern="dd.MM.yyyy" timeZone="Europe/Berlin" />
-					</h:outputText>
-				</h:column>
-			</h:dataTable>
-
+		<h:panelGroup rendered="#{empty conferences}">
+			<em>No registered conferences.</em>
+		</h:panelGroup>
+		<rich:dataTable id="conferenceTable" var="_conference"
+			value="#{conferences}" rendered="#{not empty conferences}"
+			style="width : 100%">
+			<rich:column id="conference_id">
+				<f:facet name="header">Id</f:facet>
+				<h:link outcome="conference" value="#{_conference.id}">
+					<f:param name="id" value="#{_conference.id}" />
+				</h:link>
+			</rich:column>
+			<rich:column id="conference_name">
+				<f:facet name="header">Name</f:facet>
+                  #{_conference.name}
+               </rich:column>
+			<rich:column id="conference_description">
+				<f:facet name="header">Description</f:facet>
+                  #{_conference.description}
+               </rich:column>
+			<rich:column id="conference_location">
+				<f:facet name="header">Location</f:facet>
+                  #{_conference.location.name}
+               </rich:column>
+			<rich:column id="conference_start_date">
+				<f:facet name="header">Begin</f:facet>
+				<h:outputText value="#{_conference.startDate}">
+					<f:convertDateTime pattern="dd-MM-yyyy" />
+				</h:outputText>
+			</rich:column>
+			<rich:column id="conference_end_date">
+				<f:facet name="header">End</f:facet>
+				<h:outputText value="#{_conference.endDate}">
+					<f:convertDateTime pattern="dd-MM-yyyy" />
+				</h:outputText>
+			</rich:column>
+			<f:facet name="footer">
+                  REST URL for all conferences: <a
+					href="/conference-ws/rest/conferences/" target="_rest_all">/conference-ws/rest/conferences</a>
+			</f:facet>
+		</rich:dataTable>
 	</ui:define>
 </ui:composition>

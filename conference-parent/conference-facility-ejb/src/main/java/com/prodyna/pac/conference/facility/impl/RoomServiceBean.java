@@ -3,6 +3,7 @@ package com.prodyna.pac.conference.facility.impl;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -29,6 +30,10 @@ public class RoomServiceBean extends AbstractBaseConferenceServiceBean<Room> imp
 	@Inject
 	EntityManager em;
 	
+	@Inject
+	Event<Room> roomChanged;
+
+	
 	public RoomServiceBean() {
 		super(Room.class);
 	}
@@ -41,6 +46,11 @@ public class RoomServiceBean extends AbstractBaseConferenceServiceBean<Room> imp
 	@Override
 	protected Logger getLogger() {
 		return logger;
+	}
+	
+	@Override
+	protected Event<Room> getChangedEvent() {
+		return roomChanged;
 	}
 
 	@SuppressWarnings("unchecked")

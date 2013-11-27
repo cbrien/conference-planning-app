@@ -5,5 +5,5 @@ import java.io.Serializable;
 public interface ConferenceEntity extends Serializable, Cloneable {
 
 	Long getId();
-	
+	void setId(Long id);
 }

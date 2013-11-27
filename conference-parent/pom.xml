@@ -41,6 +41,7 @@
 			work with JBoss EAP 6. It requires you have access to the JBoss EAP 6 maven 
 			repository. -->
 		<!-- <version.jboss.bom>1.0.2.Final-redhat-1</version.jboss.bom>> -->
+        <org.richfaces.bom.version>4.2.3.Final</org.richfaces.bom.version>
 
 		<version.jboss.as>7.2.0.Final</version.jboss.as>
 		<!-- Alternatively, comment out the above line, and un-comment the line 
@@ -174,6 +175,16 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			
+            <dependency>
+                <groupId>org.richfaces</groupId>
+                <artifactId>richfaces-bom</artifactId>
+                <version>${org.richfaces.bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+	
+			
 
 			<dependency>
 				<groupId>org.slf4j</groupId>

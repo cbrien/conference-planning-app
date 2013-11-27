@@ -3,6 +3,7 @@ package com.prodyna.pac.conference.events.impl;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -29,6 +30,9 @@ public class AssignmentServiceBean extends AbstractBaseConferenceServiceBean<Ass
 	@Inject
 	EntityManager em;
 	
+	@Inject
+	Event<Assignment> assignmentChanged;
+
 	public AssignmentServiceBean() {
 		super(Assignment.class);
 	}
@@ -41,6 +45,11 @@ public class AssignmentServiceBean extends AbstractBaseConferenceServiceBean<Ass
 	@Override
 	protected Logger getLogger() {
 		return logger;
+	}
+	
+	@Override
+	protected Event<Assignment> getChangedEvent() {
+		return assignmentChanged;
 	}
 	
 	@SuppressWarnings("unchecked")

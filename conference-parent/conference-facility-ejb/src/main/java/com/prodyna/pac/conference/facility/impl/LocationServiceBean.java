@@ -1,6 +1,7 @@
 package com.prodyna.pac.conference.facility.impl;
 
 import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
@@ -25,6 +26,10 @@ public class LocationServiceBean extends AbstractBaseConferenceServiceBean<Locat
 	@Inject
 	EntityManager em;
 	
+	@Inject
+	Event<Location> locationChanged;
+
+	
 	public LocationServiceBean() {
 		super(Location.class);
 	}
@@ -37,6 +42,11 @@ public class LocationServiceBean extends AbstractBaseConferenceServiceBean<Locat
 	@Override
 	protected Logger getLogger() {
 		return logger;
+	}
+	
+	@Override
+	protected Event<Location> getChangedEvent() {
+		return locationChanged;
 	}
 	
 	@Override

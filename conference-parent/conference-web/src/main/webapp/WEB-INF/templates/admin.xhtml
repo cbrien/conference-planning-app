@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:head>
+   <title>Conference Center Administration</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <h:outputStylesheet name="screen.css" library="css"/>
+</h:head>
+<h:body>
+    <div id="container">
+        <div class="dualbrand">
+            <h:graphicImage name="dualbrand_logo.png" library="gfx"/>
+        </div>
+        <div class="navigation">
+        	<ul>
+        	<li><h:link outcome="index" value="Home"/></li>
+        	<li><h:link outcome="locations" value="Locations"/></li>
+        	<li><h:link outcome="users" value="Users"/></li>
+        	<li><h:link outcome="events" value="Events"/></li>
+        	</ul>
+        </div>
+        <div id="content">
+            <ui:insert name="content">
+                [Template content will be inserted here]
+            </ui:insert>
+        </div>
+        <div id="footer">
+            <p>
+                This project has been built based on a Maven archetype from JBoss.<br />
+            </p>
+        </div>
+    </div>
+</h:body>
+</html>

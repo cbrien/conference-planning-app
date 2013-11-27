@@ -3,6 +3,7 @@ package com.prodyna.pac.conference.events.impl;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -29,6 +30,9 @@ public class ConferenceServiceBean extends AbstractBaseConferenceServiceBean<Con
 	@Inject
 	EntityManager em;
 	
+	@Inject
+	Event<Conference> conferenceChanged;
+	
 	public ConferenceServiceBean() {
 		super(Conference.class);
 	}
@@ -41,6 +45,11 @@ public class ConferenceServiceBean extends AbstractBaseConferenceServiceBean<Con
 	@Override
 	protected Logger getLogger() {
 		return logger;
+	}
+	
+	@Override
+	protected Event<Conference> getChangedEvent() {
+		return conferenceChanged;
 	}
 
 	@SuppressWarnings("unchecked")

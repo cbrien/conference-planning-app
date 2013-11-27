@@ -18,8 +18,6 @@ import com.prodyna.pac.conference.common.monitor.Monitored;
 import com.prodyna.pac.conference.events.exceptions.NotDuringConferenceException;
 import com.prodyna.pac.conference.events.exceptions.RoomOccupiedException;
 import com.prodyna.pac.conference.events.exceptions.SpeakerOccupiedException;
-import com.prodyna.pac.conference.events.messaging.TalkChanged;
-import com.prodyna.pac.conference.events.messaging.TalkDeleted;
 import com.prodyna.pac.conference.events.model.Conference;
 import com.prodyna.pac.conference.events.model.Talk;
 import com.prodyna.pac.conference.events.service.ConferenceService;
@@ -46,12 +44,7 @@ public class TalkServiceBean extends AbstractBaseConferenceServiceBean<Talk>
 	ConferenceService conferenceService;
 
 	@Inject
-	@TalkChanged
 	Event<Talk> talkChangedEvent;
-
-	@Inject
-	@TalkDeleted
-	Event<Talk> talkDeletedEvent;
 
 	public TalkServiceBean() {
 		super(Talk.class);
@@ -65,6 +58,11 @@ public class TalkServiceBean extends AbstractBaseConferenceServiceBean<Talk>
 	@Override
 	protected Logger getLogger() {
 		return logger;
+	}
+	
+	@Override
+	protected Event<Talk> getChangedEvent() {
+		return talkChangedEvent;
 	}
 
 	@Audited
@@ -83,7 +81,6 @@ public class TalkServiceBean extends AbstractBaseConferenceServiceBean<Talk>
 		super.update(talk);
 		deleteTalkSpeakers(talk);
 		saveTalkSpeakers(talk);
-		talkChangedEvent.fire(talk);
 	}
 
 	@Override
@@ -91,14 +88,18 @@ public class TalkServiceBean extends AbstractBaseConferenceServiceBean<Talk>
 		Talk talk = get(id);
 		deleteTalkSpeakers(talk);
 		super.delete(id);
-		talkDeletedEvent.fire(talk);
 	}
 	
 	@Override
 	public Talk get(long id) {
 		Talk talk = super.get(id);
-		talk.getSpeakers().addAll(findSpeakersForTalk(talk));
+		placeSpeakers(talk);
 		return talk;
+	}
+
+	@Override
+	public List<Talk> list() {
+		return placeSpeakers(super.list());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -106,7 +107,7 @@ public class TalkServiceBean extends AbstractBaseConferenceServiceBean<Talk>
 	public List<Talk> findByRoom(Room room) {
 		Query query = em.createNamedQuery(Talk.FIND_TALKS_BY_ROOM);
 		query.setParameter("room", room);
-		return query.getResultList();
+		return placeSpeakers(query.getResultList());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -114,7 +115,7 @@ public class TalkServiceBean extends AbstractBaseConferenceServiceBean<Talk>
 	public List<Talk> findBySpeaker(User speaker) {
 		Query query = em.createNamedQuery(Talk.FIND_TALKS_BY_SPEAKER);
 		query.setParameter("speaker", speaker);
-		return query.getResultList();
+		return placeSpeakers(query.getResultList());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -130,9 +131,21 @@ public class TalkServiceBean extends AbstractBaseConferenceServiceBean<Talk>
 	public List<Talk> findByConference(Conference conference) {
 		Query query = em.createNamedQuery(Talk.FIND_TALKS_BY_CONFERENCE);
 		query.setParameter("conference", conference);
-		return query.getResultList();
+		return placeSpeakers(query.getResultList());
 	}
 
+	private Talk placeSpeakers(Talk talk) {
+		talk.getSpeakers().addAll(findSpeakersForTalk(talk));
+		return talk;
+	}
+
+	private List<Talk> placeSpeakers(List<Talk> talkList) {
+		for (Talk talk : talkList) {
+			placeSpeakers(talk);
+		}
+		return talkList;
+	}
+	
 	private void saveTalkSpeakers(Talk talk) throws ConferenceServiceException {
 		if (talk.getSpeakers() != null) {
 			for (User speaker : talk.getSpeakers()) {

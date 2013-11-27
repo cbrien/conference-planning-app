@@ -88,18 +88,12 @@ public class TalkListenerBean implements Serializable {
 	 * @param talk
 	 *            the talk
 	 */
-	public void recieveTalkChanged(@Observes @TalkChanged Talk talk) {
-		sendMessage(talk, false);
-	}
-
-	/**
-	 * Recieve talk deleted.
-	 * 
-	 * @param talk
-	 *            the talk
-	 */
-	public void recieveTalkDeleted(@Observes @TalkDeleted Talk talk) {
-		sendMessage(talk, true);
+	public void recieveTalkChanged(@Observes Talk talk) {
+		if (talk != null) {
+			sendMessage(talk, talk.getId() != null);
+		} else {
+			logger.warn("talkChangedEvent without content recieved");
+		}
 	}
 
 	/**
@@ -107,14 +101,14 @@ public class TalkListenerBean implements Serializable {
 	 * 
 	 * @param talk
 	 *            the talk
-	 * @param deleted
+	 * @param updated
 	 *            the deleted
 	 */
-	private void sendMessage(Talk talk, boolean deleted) {
+	private void sendMessage(Talk talk, boolean updated) {
 		try {
 			Message message = session.createMessage();
 			message.setLongProperty("talkId", talk.getId());
-			message.setBooleanProperty("deleted", deleted);
+			message.setBooleanProperty("deleted", !updated);
 			sender.send(message);
 		} catch (JMSException e) {
 			logger.error("could not send JMS message", e);

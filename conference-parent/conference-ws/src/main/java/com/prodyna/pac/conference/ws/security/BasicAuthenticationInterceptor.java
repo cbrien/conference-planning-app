@@ -77,7 +77,7 @@ public class BasicAuthenticationInterceptor implements PreProcessInterceptor {
 		// If no authorization information present; block access
 		if (authorization == null || authorization.isEmpty()) {
 			Headers<Object> respHeaders = new Headers<Object>();
-			respHeaders.add("WWW-Authenticate", "Basic realm=\"conference-rest-service\"");
+			respHeaders.add("WWW-Authenticate", "Basic realm=\"conference-app\"");
 			ServerResponse response = new ServerResponse("Authorization required", 401, respHeaders);
 			return response;
 		}

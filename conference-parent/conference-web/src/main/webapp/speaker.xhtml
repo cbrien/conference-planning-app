@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition template="/WEB-INF/templates/default.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:my="http://java.sun.com/jsf/composite/components">
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewParam id="id" name="id" value="#{speakerView.id}"
+				required="true"/>
+			<f:event type="preRenderView" listener="#{speakerView.init}" />
+		</f:metadata>
+
+		<h:outputStylesheet name="app.css" library="css" />
+		<h:outputScript target="head" name="showMessage.js" library="js" />
+
+		<h1>Details for speaker: #{speakerView.speaker.firstname}
+			#{speakerView.speaker.lastname}</h1>
+
+		<h:panelGrid columns="2">
+			<h:outputLabel value="Organization:" for="organization" />
+			<h:link id="organization" outcome="organization"
+				value="#{speakerView.speaker.organization.name}">
+				<f:param name="id" value="#{speakerView.speaker.organization.id}" />
+			</h:link>
+	
+			<h:outputLabel value="Description:" for="description" />
+			<h:inputTextarea id="description" readonly="true"
+				value="#{speakerView.speaker.description}" />
+	
+			<h:outputLabel value="Email:" for="email" />
+			<h:outputLink id="email" value="mailto:#{speakerView.speaker.email}">
+				<h:outputText value="#{speakerView.speaker.email}" />
+			</h:outputLink>
+	
+			<h:outputLabel value="Date of Birth:" for="date_of_birth" />
+			<h:outputText id="date_of_birth"
+				value="#{speakerView.speaker.dateOfBirth}">
+				<f:convertDateTime pattern="dd-MM-yyyy" />
+			</h:outputText>
+		</h:panelGrid>
+		
+		<div>
+			<p>Please find a list of talks from the speaker</p>
+		</div>
+
+		<h:panelGroup rendered="#{empty speakerView.talks}">
+			<em>No registered talks.</em>
+		</h:panelGroup>
+		<rich:dataTable id="speakerTable" var="_talk"
+			value="#{speakerView.talks}"
+			rendered="#{not empty speakerView.talks}" style="width: 100%">
+
+			<rich:column id="talk_name">
+				<f:facet name="header">Name</f:facet>
+				<h:link outcome="talk" value=" #{_talk.name}">
+					<f:param name="id" value="#{_talk.id}" />
+				</h:link>
+			</rich:column>
+			<rich:column id="talk_description">
+				<f:facet name="header">Description</f:facet>
+                      #{_talk.description}
+                   </rich:column>
+			<rich:column id="talk_room">
+				<f:facet name="header">Room</f:facet>
+				<h:link outcome="room" value="#{_talk.room.name}">
+					<f:param name="id" value="#{_talk.room.id}" />
+				</h:link>
+			</rich:column>
+			<rich:column id="talk_start_time">
+				<f:facet name="header">Begin</f:facet>
+				<h:outputText value="#{_talk.startDate}">
+					<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+				</h:outputText>
+			</rich:column>
+			<rich:column id="talk_length">
+				<f:facet name="header">Length</f:facet>
+				<h:outputText value="#{_talk.length} min" />
+			</rich:column>
+
+			<f:facet name="footer">
+                      REST URL for speaker talks: <a
+					href="/conference-ws/rest/talks/speaker/#{speakerView.id}/"
+					target="_rest_all">/rest/talks/speaker/_ID_/</a>
+			</f:facet>
+		</rich:dataTable>
+	</ui:define>
+</ui:composition>

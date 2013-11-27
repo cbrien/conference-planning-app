@@ -3,6 +3,7 @@ package com.prodyna.pac.conference.users.impl;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -29,6 +30,9 @@ public class UserServiceBean extends AbstractBaseConferenceServiceBean<User> imp
 	@Inject
 	EntityManager em;
 	
+	@Inject
+	Event<User> userChanged;
+
 	public UserServiceBean() {
 		super(User.class);
 	}
@@ -42,11 +46,17 @@ public class UserServiceBean extends AbstractBaseConferenceServiceBean<User> imp
 	protected Logger getLogger() {
 		return logger;
 	}
+	
+	@Override
+	protected Event<User> getChangedEvent() {
+		return userChanged;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<User> findByOrganization(Organization organization) {
 		Query query = em.createNamedQuery(User.FIND_USERS_BY_ORGANIZATION);
+		query.setParameter("organization", organization);
 		return query.getResultList();
 	}
 	

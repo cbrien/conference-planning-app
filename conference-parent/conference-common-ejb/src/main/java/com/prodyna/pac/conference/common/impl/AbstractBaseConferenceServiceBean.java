@@ -2,6 +2,7 @@ package com.prodyna.pac.conference.common.impl;
 
 import java.util.List;
 
+import javax.enterprise.event.Event;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
@@ -26,6 +27,8 @@ public abstract class AbstractBaseConferenceServiceBean<T extends ConferenceEnti
 
 	abstract protected Logger getLogger();
 
+	abstract protected Event<T> getChangedEvent();
+
 	@Override
 	public T get(long id) {
 		return getEm().find(entityClass, id);
@@ -41,6 +44,7 @@ public abstract class AbstractBaseConferenceServiceBean<T extends ConferenceEnti
 		try {
 			getEm().persist(object);
 			getEm().flush();
+			getChangedEvent().fire(object);
 			getLogger().info(
 					entityClass.getSimpleName() + " added with id: "
 							+ object.getId());
@@ -60,6 +64,7 @@ public abstract class AbstractBaseConferenceServiceBean<T extends ConferenceEnti
 		try {
 			getEm().merge(object);
 			getEm().flush();
+			getChangedEvent().fire(object);
 			getLogger().info(
 					entityClass.getSimpleName() + " updated with id: "
 							+ object.getId());
@@ -73,6 +78,8 @@ public abstract class AbstractBaseConferenceServiceBean<T extends ConferenceEnti
 		T object = get(id);
 		if (object != null) {
 			getEm().remove(object);
+			object.setId(null);
+			getChangedEvent().fire(object);
 			getLogger().info(
 					entityClass.getSimpleName() + " deleted with id: "
 							+ object.getId());

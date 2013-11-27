@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition template="/WEB-INF/templates/default.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:my="http://java.sun.com/jsf/composite/components">
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewParam id="id" name="id" value="#{roomView.id}" required="true" />
+			<f:event type="preRenderView" listener="#{roomView.init}" />
+		</f:metadata>
+
+		<h:outputStylesheet name="app.css" library="css" />
+		<h:outputScript target="head" name="showMessage.js" library="js" />
+
+		<h1>Details for room: #{roomView.room.name}</h1>
+		<h:panelGrid columns="2">
+			<h:outputLabel value="Location:" for="location" />
+			<h:link id="location" outcome="location"
+				value="#{roomView.room.location.name}">
+				<f:param name="id" value="#{roomView.room.location.id}" />
+			</h:link>
+
+			<h:outputLabel value="Description:" for="description" />
+			<h:inputTextarea id="description" readonly="true"
+				value="#{roomView.room.description}" />
+
+			<h:outputLabel value="Capacity:" for="capacity" />
+			<h:outputText id="capacity" value="#{roomView.room.capacity}" />
+		</h:panelGrid>
+		<div>
+			<p>Please find a list of available talks</p>
+		</div>
+
+		<h:panelGroup rendered="#{empty roomView.talks}">
+			<em>No scheduled talks</em>
+		</h:panelGroup>
+		<rich:dataTable id="conferenceTable" var="_talk"
+			value="#{roomView.talks}" rendered="#{not empty roomView.talks}"
+			style="width: 100%">
+
+			<rich:column id="talk_name">
+				<f:facet name="header">Name</f:facet>
+				<h:link outcome="talk" value=" #{_talk.name}">
+					<f:param name="id" value="#{_talk.id}" />
+				</h:link>
+			</rich:column>
+			<rich:column id="talk_description">
+				<f:facet name="header">Description</f:facet>
+                      #{_talk.description}
+                   </rich:column>
+			<rich:column id="talk_room">
+				<f:facet name="header">Room</f:facet>
+				<h:link outcome="room" value="#{_talk.room.name}">
+					<f:param name="id" value="#{_talk.room.id}" />
+				</h:link>
+			</rich:column>
+			<rich:column id="talk_start_time">
+				<f:facet name="header">Begin</f:facet>
+				<h:outputText value="#{_talk.startDate}">
+					<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+				</h:outputText>
+			</rich:column>
+			<rich:column id="talk_length">
+				<f:facet name="header">Length</f:facet>
+				<h:outputText value="#{_talk.length} min" />
+			</rich:column>
+
+			<f:facet name="footer">
+                      REST URL for talks in room: <a
+					href="/conference-ws/rest/talks/room/#{roomView.id}/"
+					target="_rest_all">/rest/talks/room/_ID_/</a>
+			</f:facet>
+		</rich:dataTable>
+	</ui:define>
+</ui:composition>

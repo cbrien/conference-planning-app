@@ -1,58 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-    JBoss, Home of Professional Open Source
-    Copyright 2013, Red Hat, Inc. and/or its affiliates, and individual
-    contributors by the @authors tag. See the copyright.txt in the
-    distribution for a full listing of individual contributors.
+<ui:composition template="/WEB-INF/templates/default.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:my="http://java.sun.com/jsf/composite/components">
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewParam id="id" name="id" value="#{conferenceView.id}"
+				required="true" />
+			<f:event type="preRenderView" listener="#{conferenceView.init}" />
+		</f:metadata>
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-    http://www.apache.org/licenses/LICENSE-2.0
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
--->
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:c="http://java.sun.com/jsp/jstl/core"
-    template="/WEB-INF/templates/default.xhtml">
-    <ui:define name="content">
-        <h1>List of available conferences</h1>
+		<h:outputStylesheet name="app.css" library="css" />
+		<h:outputScript target="head" name="showMessage.js" library="js" />
 
-        <h:form id="talkList">
-            
-        <h:panelGroup rendered="#{empty conferenceView.talks}">
-            <em>No registered talks.</em>
-        </h:panelGroup>
-        <c:forEach var="" items="#{conferenceView.dates}">
-        <h:panelGroup layout="block">
-        <h:dataTable var="_member" value="#{members}"
-            rendered="#{not empty members}"
-            styleClass="simpletablestyle">
-            <h:column>
-                <f:facet name="header">Id</f:facet>
-                #{_member.id}
-            </h:column>
-            <h:column>
-                <f:facet name="header">Name</f:facet>
-                #{_member.name}
-            </h:column>
-            <h:column>
-                <f:facet name="header">Email</f:facet>
-                #{_member.email}
-            </h:column>
-            <h:column>
-                <f:facet name="header">Phone #</f:facet>
-                #{_member.phoneNumber}
-            </h:column>
-        </h:dataTable>
-        </h:panelGroup>
-        </c:forEach>
-        </h:form>
-    </ui:define>
+		<h1>Details for conference: #{conferenceView.conference.name}</h1>
+		<h:panelGrid columns="2">
+			<h:outputLabel value="Location:" for="location" />
+			<h:link id="location" outcome="location"
+				value="#{conferenceView.conference.location.name}">
+				<f:param name="id" value="#{conferenceView.conference.location.id}" />
+			</h:link>
+
+			<h:outputLabel value="Description:" for="description" />
+			<h:inputTextarea id="description" readonly="true"
+				value="#{conferenceView.conference.description}" />
+
+			<h:outputLabel value="Start Date:" for="start_date" />
+			<h:outputText id="start_date"
+				value="#{conferenceView.conference.startDate}">
+				<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+			</h:outputText>
+
+			<h:outputLabel value="End Date:" for="end_date" />
+			<h:outputText id="end_date"
+				value="#{conferenceView.conference.endDate}">
+				<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+			</h:outputText>
+		</h:panelGrid>
+		<div>
+			<p>Please find a list of available talks</p>
+		</div>
+
+		<h:panelGroup rendered="#{empty conferenceView.talks}">
+			<em>No registered talks.</em>
+		</h:panelGroup>
+		<rich:dataTable id="conferenceTable" var="_talk"
+			value="#{conferenceView.talks}"
+			rendered="#{not empty conferenceView.talks}" style="width: 100%">
+
+			<rich:column id="talk_name">
+				<f:facet name="header">Name</f:facet>
+				<h:link outcome="talk" value=" #{_talk.name}">
+					<f:param name="id" value="#{_talk.id}" />
+				</h:link>
+			</rich:column>
+			<rich:column id="talk_description">
+				<f:facet name="header">Description</f:facet>
+                      #{_talk.description}
+                   </rich:column>
+			<rich:column id="talk_room">
+				<f:facet name="header">Room</f:facet>
+				<h:link outcome="room" value="#{_talk.room.name}">
+					<f:param name="id" value="#{_talk.room.id}" />
+				</h:link>
+			</rich:column>
+			<rich:column id="talk_start_time">
+				<f:facet name="header">Begin</f:facet>
+				<h:outputText value="#{_talk.startDate}">
+					<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+				</h:outputText>
+			</rich:column>
+			<rich:column id="talk_length">
+				<f:facet name="header">Length</f:facet>
+				<h:outputText value="#{_talk.length} min" />
+			</rich:column>
+
+			<f:facet name="footer">
+                      REST URL for conference talks: <a
+					href="/conference-ws/rest/talks/conference/#{conferenceView.id}/"
+					target="_rest_all">/rest/talks/conference/_ID_/</a>
+			</f:facet>
+		</rich:dataTable>
+	</ui:define>
 </ui:composition>
