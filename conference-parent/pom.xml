@@ -20,6 +20,7 @@
 		<module>conference-app</module>
 		<module>conference-ws</module>
 		<module>conference-dist</module>
+		<module>conference-docs</module>
 	</modules>
 
 	<properties>

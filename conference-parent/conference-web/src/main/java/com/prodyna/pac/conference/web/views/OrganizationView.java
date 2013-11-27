@@ -58,5 +58,12 @@ public class OrganizationView {
 	public List<User> getSpeakers() {
 		return speakers;
 	}
+
+	/**
+	 * @param organization the organization to set
+	 */
+	public void setOrganization(Organization organization) {
+		this.organization = organization;
+	}
 	
 }

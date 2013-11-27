@@ -23,9 +23,7 @@ body {
   box-shadow: 3px 3px 15px #d5d5d5;
 }
 #content {
-  float: left;
-  width: 500px;
-  margin: 20px;
+  width: 100%;
 }
 #aside {
   font-size: 0.9em;

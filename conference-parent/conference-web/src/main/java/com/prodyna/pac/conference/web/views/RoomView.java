@@ -58,5 +58,12 @@ public class RoomView {
 	public List<Talk> getTalks() {
 		return talks;
 	}
+
+	/**
+	 * @param room the room to set
+	 */
+	public void setRoom(Room room) {
+		this.room = room;
+	}
 	
 }

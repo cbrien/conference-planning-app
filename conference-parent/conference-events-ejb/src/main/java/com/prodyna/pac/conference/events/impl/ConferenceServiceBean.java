@@ -15,6 +15,7 @@ import com.prodyna.pac.conference.common.audit.Audited;
 import com.prodyna.pac.conference.common.exceptions.ConferenceServiceException;
 import com.prodyna.pac.conference.common.impl.AbstractBaseConferenceServiceBean;
 import com.prodyna.pac.conference.common.monitor.Monitored;
+import com.prodyna.pac.conference.events.exceptions.LocationOccupiedException;
 import com.prodyna.pac.conference.events.model.Conference;
 import com.prodyna.pac.conference.events.service.ConferenceService;
 import com.prodyna.pac.conference.facility.model.Location;
@@ -62,14 +63,30 @@ public class ConferenceServiceBean extends AbstractBaseConferenceServiceBean<Con
 
 	@Audited
 	@Override
-	public Long add(Conference object) throws ConferenceServiceException {
-		return super.add(object);
+	public Long add(Conference conference) throws ConferenceServiceException {
+		return super.add(isValid(conference));
 	}
 	
 	@Audited
 	@Override
 	public void update(Conference object) throws ConferenceServiceException {
-		super.update(object);
+		super.update(isValid(object));
+	}
+	
+	private Conference isValid(Conference conference) {
+		for (Conference existingConference : findByLocation(conference.getLocation())){
+			if (!existingConference.getId().equals(conference.getId()) && isOverlapping(conference, existingConference)) {
+				throw new LocationOccupiedException(existingConference);
+			}
+		}
+		return conference;
 	}
 
+	private boolean isOverlapping(Conference conference, Conference conference2) {
+		long start = conference.getStartDate().getTime();
+		long end = conference.getEndDate().getTime();
+		long start2 = conference2.getStartDate().getTime();
+		long end2 = conference2.getEndDate().getTime();
+		return ((start < end2) && (end > start2));
+	}
 }

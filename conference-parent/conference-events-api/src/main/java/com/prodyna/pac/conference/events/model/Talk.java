@@ -1,8 +1,8 @@
 package com.prodyna.pac.conference.events.model;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -79,7 +79,7 @@ public class Talk implements ConferenceEntity {
 
 	/** The speaker. */
 	@Transient
-	private Set<User> speakers = new HashSet<User>();
+	private List<User> speakers = new ArrayList<User>();
 
 	/** The start date. */
 	@NotNull
@@ -216,7 +216,7 @@ public class Talk implements ConferenceEntity {
 	/**
 	 * @return the speaker
 	 */
-	public Set<User> getSpeakers() {
+	public List<User> getSpeakers() {
 		return speakers;
 	}
 
@@ -224,7 +224,7 @@ public class Talk implements ConferenceEntity {
 	 * @param speakers
 	 *            the speaker to set
 	 */
-	public void setSpeakers(Set<User> speakers) {
+	public void setSpeakers(List<User> speakers) {
 		this.speakers = speakers;
 	}
 

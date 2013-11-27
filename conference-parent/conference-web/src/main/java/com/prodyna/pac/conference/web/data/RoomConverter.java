@@ -19,38 +19,56 @@ package com.prodyna.pac.conference.web.data;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
+import javax.enterprise.inject.Model;
 import javax.enterprise.inject.Produces;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.prodyna.pac.conference.events.model.Conference;
-import com.prodyna.pac.conference.events.service.ConferenceService;
+import com.prodyna.pac.conference.facility.model.Room;
+import com.prodyna.pac.conference.facility.service.RoomService;
 
-@RequestScoped
-public class ConferenceListProducer {
+@Model
+public class RoomConverter implements Converter{
 
     @Inject
-    private ConferenceService conferenceService;
+    private RoomService roomService;
 
-    private List<Conference> conferences;
+    private List<Room> rooms;
 
-    // @Named provides access the return value via the EL variable name "conferences" in the UI (e.g.
+    // @Named provides access the return value via the EL variable name "rooms" in the UI (e.g.
     // Facelets or JSP view)
     @Produces
-    @Named("conferences")
-    public List<Conference> getConferences() {
-        return conferences;
+    @Named("rooms")
+    public List<Room> getRooms() {
+        return rooms;
     }
 
-    public void onConferenceListChanged(@Observes(notifyObserver = Reception.IF_EXISTS) final Conference conference) {
-        retrieveAllConferencesOrderedByName();
+    public void onRoomListChanged(@Observes(notifyObserver = Reception.IF_EXISTS) final Room room) {
+        retrieveAllRoomsOrderedByName();
     }
 
     @PostConstruct
-    public void retrieveAllConferencesOrderedByName() {
-        conferences = conferenceService.list();
+    public void retrieveAllRoomsOrderedByName() {
+        rooms = roomService.list();
     }
+    
+	@Override
+	public Object getAsObject(FacesContext arg0, UIComponent arg1, String value) {
+		for (Room room : rooms) {
+			if (room.getId().equals(Long.parseLong(value))) {
+				return room;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public String getAsString(FacesContext arg0, UIComponent arg1, Object value) {
+		return String.valueOf(((Room)value).getId());
+	}
 }

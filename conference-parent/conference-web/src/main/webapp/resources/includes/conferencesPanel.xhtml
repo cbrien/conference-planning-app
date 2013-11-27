@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:my="http://java.sun.com/jsf/composite/components">
+
+<ui:composition>
+	<h:form id="conference">
+		<rich:collapsiblePanel id="conferenceList" header="Conferences" expanded="#{panelState.showConferences}"
+			headerClass="header" title="Click to expand/collapse">
+			<h:panelGroup rendered="#{empty conferences}">
+				<em>No registered conferences.</em>
+			</h:panelGroup>
+			<rich:dataTable id="conferenceTable" var="_conference"
+				value="#{conferences}" rendered="#{not empty conferences}"
+				style="width : 100%">
+				<rich:column id="view">
+					<a4j:commandLink styleClass="no-decor" render="conferencePanel"
+						execute="@this"
+						oncomplete="#{rich:component('conferencePopup')}.show()">
+                         View
+                         <f:setPropertyActionListener
+							target="#{conferenceView.conference}" value="#{_conference}" />
+					</a4j:commandLink>
+					<a4j:commandLink styleClass="no-decor" render="conferencePanel"
+						execute="@this" action="#{conferenceView.delete}"
+						onclick="return confirm('Really delete conference #{_conference.name}?');">
+                         Delete
+                         <f:setPropertyActionListener
+							target="#{conferenceView.conference}" value="#{_conference}" />
+					</a4j:commandLink>
+				</rich:column>
+				<rich:column id="conference_id">
+					<f:facet name="header">Id</f:facet>
+                      #{_conference.id}
+                   </rich:column>
+				<rich:column id="conference_name">
+					<f:facet name="header">Name</f:facet>
+                      #{_conference.name}
+                   </rich:column>
+				<rich:column id="conference_description">
+					<f:facet name="header">Description</f:facet>
+                      #{_conference.description}
+                   </rich:column>
+				<rich:column id="conference_location">
+					<f:facet name="header">Location</f:facet>
+                      #{_conference.location.name}
+                   </rich:column>
+				<rich:column id="conference_start_date">
+					<f:facet name="header">Begin</f:facet>
+					<h:outputText value="#{_conference.startDate}">
+						<f:convertDateTime pattern="dd-MM-yyyy" />
+					</h:outputText>
+				</rich:column>
+				<rich:column id="conference_end_date">
+					<f:facet name="header">End</f:facet>
+					<h:outputText value="#{_conference.endDate}">
+						<f:convertDateTime pattern="dd-MM-yyyy" />
+					</h:outputText>
+				</rich:column>
+				<rich:column id="conference_rest_url">
+					<f:facet name="header">REST URL</f:facet>
+					<a href="/conference-ws/rest/conferences/#{_conference.id}"
+						target="_rest_conference">/rest/conferences/#{_conference.id}</a>
+				</rich:column>
+				<f:facet name="footer">
+                      REST URL for all conferences: <a
+						href="/conference-ws/rest/conferences" target="_rest_all">/rest/conferences</a>
+				</f:facet>
+			</rich:dataTable>
+			<h:panelGrid columns="2">
+				<a4j:commandButton id="add" value="Add" render="conferencePanel"
+					execute="@this"
+					oncomplete="#{rich:component('conferencePopup')}.show()" />
+			</h:panelGrid>
+		</rich:collapsiblePanel>
+
+		<rich:popupPanel id="conferencePopup" modal="true"
+			onmaskclick="#{rich:component('conferencePopup')}.hide()"
+			domElementAttachment="form" autosized="true">
+			<f:facet name="header">
+				<h:outputText value="Conference Details" />
+			</f:facet>
+			<f:facet name="controls">
+				<h:outputLink value="#"
+					onclick="#{rich:component('conferencePopup')}.hide(); return false;">
+                   X
+                </h:outputLink>
+			</f:facet>
+			<h:panelGroup id="conferencePanel">
+				<my:conferenceForm conference="#{conferenceView.conference}" />
+				<h:panelGrid columns="2">
+					<a4j:commandButton id="save" action="#{conferenceView.save}"
+						value="#{empty conferenceView.conference.id ? 'Add' : 'Save'}"
+						styleClass="register" execute="conferencePanel"
+						render="conferencePanel,conferenceList"
+						oncomplete="if (#{facesContext.maximumSeverity==null}) {#{rich:component('conferencePopup')}.hide();}" />
+					<rich:messages globalOnly="true" />
+				</h:panelGrid>
+			</h:panelGroup>
+		</rich:popupPanel>
+	</h:form>
+</ui:composition>
+
+</html>

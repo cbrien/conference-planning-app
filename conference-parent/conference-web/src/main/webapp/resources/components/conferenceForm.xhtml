@@ -1,37 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:a4j="http://richfaces.org/a4j"
-      xmlns:rich="http://richfaces.org/rich"
-      xmlns:composite="http://java.sun.com/jsf/composite">
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:composite="http://java.sun.com/jsf/composite">
 
 <!-- INTERFACE -->
 <composite:interface>
-    <composite:attribute name="conference"/>
+	<composite:attribute name="conference" />
 </composite:interface>
 
 <!-- IMPLEMENTATION -->
 <composite:implementation>
-    <h:panelGrid columns="3" columnClasses="titleCell">
-        <h:outputLabel for="name" value="Name:"/>
-        <h:inputText id="name" value="#{cc.attrs.conference.name}">
-            <rich:validator/>
-        </h:inputText>
-        <rich:message for="name" errorClass="invalid"/>
+	<h:inputHidden id="id" value="#{cc.attrs.conference.id}" />
+	<h:panelGrid columns="3" columnClasses="titleCell">
 
-        <h:outputLabel for="description" value="Description:"/>
-        <h:inputText id="description" value="#{cc.attrs.conference.description}">
-            <rich:validator/>
-        </h:inputText>
-        <rich:message for="description" errorClass="invalid"/>
+		<h:outputLabel for="name" value="Name:" />
+		<h:inputText id="name" value="#{cc.attrs.conference.name}">
+			<rich:validator />
+		</h:inputText>
+		<rich:message for="name" errorClass="invalid" />
 
-        <h:outputLabel for="location" value="Location:"/>
-        <h:inputText id="location" value="#{cc.attrs.conference.location}">
-            <rich:validator/>
-        </h:inputText>
-        <rich:message for="location" errorClass="invalid"/>
-    </h:panelGrid>
+		<h:outputLabel for="description" value="Description:" />
+		<h:inputText id="description"
+			value="#{cc.attrs.conference.description}">
+			<rich:validator />
+		</h:inputText>
+		<rich:message for="description" errorClass="invalid" />
+
+		<h:outputLabel for="start_date" value="Start Date:" />
+		<rich:calendar id="start_date"
+			value="#{cc.attrs.conference.startDate}"
+			datePattern="dd.MM.yyyy HH:mm" />
+		<rich:message for="start_date" errorClass="invalid" />
+
+		<h:outputLabel for="end_date" value="End Date:" />
+		<rich:calendar id="end_date" value="#{cc.attrs.conference.endDate}"
+			datePattern="dd.MM.yyyy HH:mm" />
+		<rich:message for="end_date" errorClass="invalid" />
+
+		<h:outputLabel for="location" value="Location:" />
+		<h:selectOneMenu id="location" value="#{cc.attrs.conference.location}"
+			converter="#{locationConverter}">
+			<f:selectItems value="#{locations}" var="_location"
+				itemLabel="#{_location.name}" itemValue="#{_location}" />
+		</h:selectOneMenu>
+		<rich:message for="location" errorClass="invalid" />
+	</h:panelGrid>
 </composite:implementation>
 </html>

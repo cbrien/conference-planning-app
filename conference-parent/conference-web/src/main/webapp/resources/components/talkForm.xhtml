@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="talk" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:inputHidden id="id" value="#{cc.attrs.talk.id}" />
+	<h:panelGrid columns="3" columnClasses="titleCell">
+
+		<h:outputLabel for="talk_conference" value="Conference:" />
+		<h:selectOneMenu id="talk_conference" value="#{cc.attrs.talk.conference}"
+			converter="#{conferenceConverter}">
+			<f:selectItems value="#{conferences}" var="_conference" itemLabel="#{_conference.name}"
+				itemValue="#{_conference}" />
+		</h:selectOneMenu>
+		<rich:message for="talk_conference" errorClass="invalid" />
+
+		<h:outputLabel for="talk_room" value="Room:" />
+		<h:selectOneMenu id="talk_room" value="#{cc.attrs.talk.room}"
+			converter="#{roomConverter}">
+			<f:selectItems value="#{rooms}" var="_room" itemLabel="#{_room.name}"
+				itemValue="#{_room}" />
+		</h:selectOneMenu>
+		<rich:message for="talk_room" errorClass="invalid" />
+
+		<h:outputLabel for="talk_name" value="Name:" />
+		<h:inputText id="talk_name" value="#{cc.attrs.talk.name}">
+			<rich:validator />
+		</h:inputText>
+		<rich:message for="talk_name" errorClass="invalid" />
+
+		<h:outputLabel for="talk_description" value="Description:" />
+		<h:inputText id="talk_description"
+			value="#{cc.attrs.talk.description}">
+			<rich:validator />
+		</h:inputText>
+		<rich:message for="talk_description" errorClass="invalid" />
+
+		<h:outputLabel for="talk_start_date" value="Start Date:" />
+		<rich:calendar id="talk_start_date" value="#{cc.attrs.talk.startDate}"
+			datePattern="dd.MM.yyyy HH:mm" />
+		<rich:message for="talk_start_date" errorClass="invalid" />
+
+		<h:outputLabel for="talk_length" value="Length [min]:" />
+		<h:inputText id="talk_length" value="#{cc.attrs.talk.length}">
+			<rich:validator />
+		</h:inputText>
+		<rich:message for="end_length" errorClass="invalid" />
+
+		<h:outputLabel for="talk_speaker" value="Speakers:" />
+		<rich:pickList id="talk_speaker" value="#{cc.attrs.talk.speakers}"
+			sourceCaption="Available Speakers" targetCaption="Selected Speakers"
+			listWidth="100px" listHeight="100px" orderable="true"
+			converter="#{userConverter}">
+			<f:selectItems value="#{users}" var="_user" itemValue="#{_user}"
+				itemLabel="#{_user.firstname} #{_user.lastname}" />
+		</rich:pickList>
+		<rich:message for="talk_speaker" errorClass="invalid" />
+	</h:panelGrid>
+</composite:implementation>
+</html>

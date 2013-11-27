@@ -42,14 +42,15 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
 
 import com.prodyna.pac.conference.events.model.Conference;
 import com.prodyna.pac.conference.events.service.ConferenceService;
-import com.prodyna.pac.conference.users.model.User;
+import com.prodyna.pac.conference.facility.model.Location;
+import com.prodyna.pac.conference.facility.service.LocationService;
 
 /**
  * JAX-RS Example
@@ -67,6 +68,9 @@ public class ConferencesRESTService {
 
     @Inject
     private ConferenceService conferenceService;
+
+    @Inject
+    private LocationService locationService;
 
     @GET
     @Path("/")
@@ -86,6 +90,18 @@ public class ConferencesRESTService {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
         return conference;
+    }
+    
+    @GET
+    @Path("/location/{id:[0-9][0-9]*}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
+    public List<Conference> getConferenceForLocation(@PathParam("id") long id) {
+        Location location = locationService.get(id);
+        if (location == null) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+		return conferenceService.findByLocation(location);
     }
     
     @PUT

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition template="/WEB-INF/templates/default.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:my="http://java.sun.com/jsf/composite/components">
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewParam id="id" name="id" value="#{locationView.id}"
+				required="true" />
+			<f:event type="preRenderView" listener="#{locationView.init}" />
+		</f:metadata>
+
+		<h:outputStylesheet name="app.css" library="css" />
+		<h:outputScript target="head" name="showMessage.js" library="js" />
+
+		<h1>Details for location: #{locationView.location.name}</h1>
+		<h:panelGrid columns="2">
+			<h:outputLabel value="Description:" for="description" />
+			<h:inputTextarea id="description" readonly="true"
+				value="#{locationView.location.description}" />
+
+			<h:outputLabel value="Address:" for="address" />
+			<h:inputTextarea  id="address" readonly="true"
+				value="#{locationView.location.address}" />
+
+		</h:panelGrid>
+		<div>
+			<p>Please find a list of available conferences</p>
+		</div>
+
+		<h:panelGroup rendered="#{empty locationView.conferences}">
+			<em>No registered conferences.</em>
+		</h:panelGroup>
+		<rich:dataTable id="locationTable" var="_conference"
+			value="#{locationView.conferences}"
+			rendered="#{not empty locationView.conferences}" style="width: 100%">
+
+			<rich:column id="conference_name">
+				<f:facet name="header">Name</f:facet>
+				<h:link outcome="conference" value=" #{_conference.name}">
+					<f:param name="id" value="#{_conference.id}" />
+				</h:link>
+			</rich:column>
+			<rich:column id="conference_description">
+				<f:facet name="header">Description</f:facet>
+                      #{_conference.description}
+                   </rich:column>
+			<rich:column id="conference_start_date">
+				<f:facet name="header">Begin</f:facet>
+				<h:outputText value="#{_conference.startDate}">
+					<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+				</h:outputText>
+			</rich:column>
+			<rich:column id="conference_end_date">
+				<f:facet name="header">End</f:facet>
+				<h:outputText value="#{_conference.endDate}">
+					<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+				</h:outputText>
+			</rich:column>
+
+			<f:facet name="footer">
+                      REST URL for conferences at the location: <a
+					href="/conference-ws/rest/conferences/location/#{locationView.id}/"
+					target="_rest_all">/rest/conferences/location/_ID_/</a>
+			</f:facet>
+		</rich:dataTable>
+	</ui:define>
+</ui:composition>

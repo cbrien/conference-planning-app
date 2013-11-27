@@ -58,5 +58,12 @@ public class SpeakerView {
 	public List<Talk> getTalks() {
 		return talks;
 	}
+
+	/**
+	 * @param speaker the speaker to set
+	 */
+	public void setSpeaker(User speaker) {
+		this.speaker = speaker;
+	}
 	
 }

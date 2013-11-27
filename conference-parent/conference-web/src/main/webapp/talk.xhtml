@@ -41,12 +41,12 @@
 			<p>Please find the list of speakers for the talk</p>
 		</div>
 
-		<h:panelGroup rendered="#{empty talkView.speakers}">
+		<h:panelGroup rendered="#{empty talkView.talk.speakers}">
 			<em>No registered speakers.</em>
 		</h:panelGroup>
 		<rich:dataTable id="speakerTable" var="_speaker"
-			value="#{talkView.speakers}"
-			rendered="#{not empty talkView.speakers}" style="width: 100%">
+			value="#{talkView.talk.speakers}"
+			rendered="#{not empty talkView.talk.speakers}" style="width: 100%">
 
 			<rich:column id="speaker_name">
 				<f:facet name="header">Name</f:facet>

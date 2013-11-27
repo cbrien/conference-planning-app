@@ -276,4 +276,10 @@ public class Conference implements ConferenceEntity {
 				+ startDate + ", endDate=" + endDate + "]";
 	}
 	
+	@AssertTrue(message="start date not before end date")
+	private boolean isValidDateRange(){
+		return startDate.before(endDate);
+	}
+	
+	
 }

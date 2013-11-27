@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:my="http://java.sun.com/jsf/composite/components">
+
+<ui:composition>
+	<h:form id="talk">
+		<rich:collapsiblePanel id="talkList" header="Talks" expanded="#{panelState.showTalks}"
+			headerClass="header" title="Click to expand/collapse">
+			<h:panelGroup rendered="#{empty talks}">
+				<em>No registered talks.</em>
+			</h:panelGroup>
+			<rich:dataTable id="talkTable" var="_talk"
+				value="#{talks}" rendered="#{not empty talks}"
+				style="width : 100%">
+				<rich:column id="view">
+					<a4j:commandLink styleClass="no-decor" render="talkPanel"
+						execute="@this"
+						oncomplete="#{rich:component('talkPopup')}.show()">
+                         View
+                         <f:setPropertyActionListener
+							target="#{talkView.talk}" value="#{_talk}" />
+					</a4j:commandLink>
+					<a4j:commandLink styleClass="no-decor" render="talkPanel"
+						execute="@this" action="#{talkView.delete}"
+						onclick="return confirm('Really delete talk #{_talk.name}?');">
+                         Delete
+                         <f:setPropertyActionListener
+							target="#{talkView.talk}" value="#{_talk}" />
+					</a4j:commandLink>
+				</rich:column>
+				<rich:column id="list_talk_id">
+					<f:facet name="header">Id</f:facet>
+                      #{_talk.id}
+                   </rich:column>
+				<rich:column id="list_talk_name">
+					<f:facet name="header">Name</f:facet>
+                      #{_talk.name}
+                   </rich:column>
+				<rich:column id="list_talk_description">
+					<f:facet name="header">Description</f:facet>
+                      #{_talk.description}
+                   </rich:column>
+				<rich:column id="list_talk_location">
+					<f:facet name="header">Room</f:facet>
+                      #{_talk.room.name}
+                   </rich:column>
+				<rich:column id="list_talk_start_date">
+					<f:facet name="header">Begin</f:facet>
+					<h:outputText value="#{_talk.startDate}">
+						<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+					</h:outputText>
+				</rich:column>
+				<rich:column id="list_talk_length">
+					<f:facet name="header">End</f:facet>
+					<h:outputText value="#{_talk.length}" />
+				</rich:column>
+				<rich:column id="list_talk_rest_url">
+					<f:facet name="header">REST URL</f:facet>
+					<a href="/conference-ws/rest/talks/#{_talk.id}"
+						target="_rest_talk">/rest/talks/#{_talk.id}</a>
+				</rich:column>
+				<f:facet name="footer">
+                      REST URL for all talks: <a
+						href="/conference-ws/rest/talks" target="_rest_all">/rest/talks</a>
+				</f:facet>
+			</rich:dataTable>
+			<h:panelGrid columns="2">
+				<a4j:commandButton id="add" value="Add" render="talkPanel"
+					execute="@this"
+					oncomplete="#{rich:component('talkPopup')}.show()" />
+			</h:panelGrid>
+		</rich:collapsiblePanel>
+
+		<rich:popupPanel id="talkPopup" modal="true"
+			onmaskclick="#{rich:component('talkPopup')}.hide()"
+			domElementAttachment="form" autosized="true">
+			<f:facet name="header">
+				<h:outputText value="Talk Details" />
+			</f:facet>
+			<f:facet name="controls">
+				<h:outputLink value="#"
+					onclick="#{rich:component('talkPopup')}.hide(); return false;">
+                   X
+                </h:outputLink>
+			</f:facet>
+			<h:panelGroup id="talkPanel">
+				<my:talkForm talk="#{talkView.talk}" />
+				<h:panelGrid columns="2">
+					<a4j:commandButton id="save" action="#{talkView.save}"
+						value="#{empty talkView.talk.id ? 'Add' : 'Save'}"
+						styleClass="register" execute="talkPanel"
+						render="talkPanel,talkList"
+						oncomplete="if (#{facesContext.maximumSeverity==null}) {#{rich:component('talkPopup')}.hide();}" />
+					<rich:messages globalOnly="true" />
+				</h:panelGrid>
+			</h:panelGroup>
+		</rich:popupPanel>
+	</h:form>
+</ui:composition>
+
+</html>
