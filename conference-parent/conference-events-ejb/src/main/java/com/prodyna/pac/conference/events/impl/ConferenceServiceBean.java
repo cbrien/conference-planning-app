@@ -61,14 +61,14 @@ public class ConferenceServiceBean extends AbstractBaseConferenceServiceBean<Con
 		return query.getResultList();
 	}
 
-	@Audited
 	@Override
+	@Audited
 	public Long add(Conference conference) throws ConferenceServiceException {
 		return super.add(isValid(conference));
 	}
 	
-	@Audited
 	@Override
+	@Audited
 	public void update(Conference object) throws ConferenceServiceException {
 		super.update(isValid(object));
 	}

@@ -65,8 +65,8 @@ public class TalkServiceBean extends AbstractBaseConferenceServiceBean<Talk>
 		return talkChangedEvent;
 	}
 
-	@Audited
 	@Override
+	@Audited
 	public Long add(Talk talk) throws ConferenceServiceException {
 		isValid(talk);
 		Long talkId = super.add(talk);
@@ -74,8 +74,8 @@ public class TalkServiceBean extends AbstractBaseConferenceServiceBean<Talk>
 		return talkId;
 	}
 
-	@Audited
 	@Override
+	@Audited
 	public void update(Talk talk) throws ConferenceServiceException {
 		isValid(talk);
 		super.update(talk);

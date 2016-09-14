@@ -16,10 +16,17 @@
  */
 package com.prodyna.pac.conference.web.util;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import org.slf4j.Logger;
 
@@ -27,6 +34,7 @@ import com.prodyna.pac.conference.events.model.Conference;
 
 // The @Stateless annotation eliminates the need for manual transaction demarcation
 @Stateless
+@Path("members")
 public class MemberRegistration {
 
     @Inject
@@ -42,5 +50,13 @@ public class MemberRegistration {
         log.info("Registering " + member.getName());
         em.persist(member);
         conferenceEventSrc.fire(member);
+    }
+    
+    @GET
+    @Path("/")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Conference> getConferences(){
+    	Query query = em.createQuery("select c from Conference c");
+    	return query.getResultList();
     }
 }

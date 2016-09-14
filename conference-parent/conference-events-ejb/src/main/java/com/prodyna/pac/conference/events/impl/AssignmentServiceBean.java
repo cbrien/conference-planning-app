@@ -11,7 +11,6 @@ import javax.persistence.Query;
 import org.slf4j.Logger;
 
 import com.prodyna.pac.conference.common.access.Logged;
-import com.prodyna.pac.conference.common.audit.Audited;
 import com.prodyna.pac.conference.common.exceptions.ConferenceServiceException;
 import com.prodyna.pac.conference.common.impl.AbstractBaseConferenceServiceBean;
 import com.prodyna.pac.conference.common.monitor.Monitored;
@@ -67,13 +66,11 @@ public class AssignmentServiceBean extends AbstractBaseConferenceServiceBean<Ass
 	}
 	
 	@Override
-	@Audited
 	public Long add(Assignment object) throws ConferenceServiceException {
 		return super.add(object);
 	}
 	
 	@Override
-	@Audited
 	public void update(Assignment object) throws ConferenceServiceException {
 		super.update(object);
 	}

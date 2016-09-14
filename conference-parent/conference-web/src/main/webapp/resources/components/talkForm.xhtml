@@ -55,7 +55,7 @@
 		<h:inputText id="talk_length" value="#{cc.attrs.talk.length}">
 			<rich:validator />
 		</h:inputText>
-		<rich:message for="end_length" errorClass="invalid" />
+		<rich:message for="talk_length" errorClass="invalid" />
 
 		<h:outputLabel for="talk_speaker" value="Speakers:" />
 		<rich:pickList id="talk_speaker" value="#{cc.attrs.talk.speakers}"

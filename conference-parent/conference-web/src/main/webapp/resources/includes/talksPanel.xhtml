@@ -24,7 +24,7 @@
                          <f:setPropertyActionListener
 							target="#{talkView.talk}" value="#{_talk}" />
 					</a4j:commandLink>
-					<a4j:commandLink styleClass="no-decor" render="talkPanel"
+					<a4j:commandLink styleClass="no-decor" render="talkList"
 						execute="@this" action="#{talkView.delete}"
 						onclick="return confirm('Really delete talk #{_talk.name}?');">
                          Delete
